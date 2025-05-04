@@ -1,1 +1,12 @@
-Flask==3.0.3
+Flask
+flask-cors
+Pillow
+ultralytics
+numpy
+opencv-python
+paddlepaddle
+paddleocr
+thefuzz
+roboflow
+torch
+torchvision
