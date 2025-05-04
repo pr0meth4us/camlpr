@@ -22,37 +22,50 @@ export default function ImageUpload({
     };
 
     return (
-        <div className="p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-                {/* Enhanced Upload Area */}
-                <div className="flex flex-col">
+        <div className="p-8 bg-gradient-to-br from-gray-900/60 to-gray-950 rounded-2xl">
+            {/* Main content wrapper */}
+            <div className="grid md:grid-cols-2 gap-8">
+                {/* Upload Section */}
+                <div className="flex flex-col space-y-5">
+                    <div className="flex items-center mb-1">
+                        <div className="w-1 h-6 bg-cyan-500 rounded-full mr-3"></div>
+                        <h3 className="text-lg font-semibold text-white">Upload Image</h3>
+                    </div>
+
+                    {/* Upload Area */}
                     <label
                         htmlFor="imageUpload"
-                        className={`relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 group ${
+                        className={`relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden group ${
                             previewUrl
-                                ? "border-cyan-500 bg-cyan-900/10"
-                                : "border-gray-700 bg-gray-900/50 hover:border-cyan-500 hover:bg-gray-800/50"
+                                ? "border-cyan-500/50 bg-cyan-950/30"
+                                : "border-gray-700 hover:border-cyan-500/50 bg-black/20 hover:bg-cyan-950/20"
                         }`}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/10 to-indigo-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div className="flex flex-col items-center justify-center p-5 text-center z-10">
+                        {/* Animated background effect */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/5 via-transparent to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                        {/* Glow effect */}
+                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-600/0 via-cyan-600/10 to-indigo-600/0 blur opacity-0 group-hover:opacity-70 transition-opacity duration-500 group-hover:animate-glow"></div>
+
+                        {/* Content */}
+                        <div className="flex flex-col items-center justify-center p-6 text-center z-10">
                             {previewUrl ? (
                                 <div className="flex flex-col items-center">
-                                    <div className="w-16 h-16 rounded-full bg-cyan-600/20 flex items-center justify-center mb-4">
+                                    <div className="w-16 h-16 rounded-full bg-cyan-600/20 backdrop-blur-xl flex items-center justify-center mb-4 ring-2 ring-cyan-500/20 shadow-lg shadow-cyan-500/10">
                                         <Camera className="w-8 h-8 text-cyan-400" />
                                     </div>
                                     <p className="text-cyan-300 font-semibold">Image Selected</p>
-                                    <p className="text-xs text-cyan-400 mt-2">Click to replace</p>
+                                    <p className="text-xs text-cyan-400/80 mt-2">Click to replace</p>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="w-16 h-16 rounded-full bg-gray-800/50 flex items-center justify-center mb-4 group-hover:bg-cyan-600/20 transition-colors duration-300">
+                                    <div className="w-16 h-16 rounded-full bg-gray-800/80 backdrop-blur-xl flex items-center justify-center mb-4 group-hover:bg-cyan-900/20 transition-colors duration-300 group-hover:scale-110 transform">
                                         <Upload className="w-8 h-8 text-gray-400 group-hover:text-cyan-400 transition-colors duration-300" />
                                     </div>
                                     <p className="mb-2 text-sm font-semibold text-gray-200">
                                         <span className="text-cyan-400">Upload Image</span> or drag and drop
                                     </p>
-                                    <p className="text-xs text-gray-400">PNG, JPG, or JPEG</p>
+                                    <p className="text-xs text-gray-400 opacity-70">PNG, JPG, or JPEG</p>
                                 </>
                             )}
                         </div>
@@ -64,63 +77,77 @@ export default function ImageUpload({
                             className="hidden"
                         />
                     </label>
+
+                    {/* Action Button - Updated with cyan gradient */}
                     <button
                         onClick={onSubmit}
                         disabled={loading || !previewUrl}
-                        className={`relative w-full mt-4 py-4 rounded-xl font-semibold flex items-center justify-center transition-all duration-300 overflow-hidden ${
+                        className={`relative px-6 py-3 rounded-lg font-medium text-sm flex items-center justify-center transition-all duration-300 ${
                             loading || !previewUrl
-                                ? "bg-gray-800 text-gray-400 cursor-not-allowed"
-                                : "bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-lg hover:shadow-cyan-500/50"
+                                ? "bg-gray-800/30 text-gray-500 cursor-not-allowed"
+                                : "bg-gradient-to-r from-cyan-600 to-cyan-500 text-white hover:from-cyan-500 hover:to-cyan-400 shadow-lg hover:shadow-cyan-500/50"
                         }`}
                     >
                         {loading ? (
                             <>
-                                <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                                 Processing...
                             </>
                         ) : (
-                            <>
-                                <span className="absolute inset-0 w-full h-full bg-white/10 transform scale-x-0 origin-left transition-transform group-hover:scale-x-100"></span>
-                                <Camera className="w-5 h-5 mr-2" />
-                                Detect License Plate
-                            </>
+                            <div className="flex items-center">
+                                <Camera className="w-4 h-4 mr-2" />
+                                <span>Detect License Plate</span>
+                            </div>
                         )}
                     </button>
+
+                    {/* Error Message */}
                     {error && (
-                        <div className="mt-4 p-4 bg-red-900/20 border-l-4 border-red-600 rounded-lg flex items-start shadow-md">
-                            <AlertCircle className="w-5 h-5 text-red-400 mr-2 mt-0.5 flex-shrink-0" />
-                            <div className="text-red-300 text-sm">{error}</div>
+                        <div className="p-4 bg-red-900/20 backdrop-blur-sm border-l-4 border-red-500 rounded-lg flex items-start shadow-lg animate-fadeIn">
+                            <AlertCircle className="w-5 h-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" />
+                            <div className="text-red-200 text-sm">{error}</div>
                         </div>
                     )}
                 </div>
-                {/* Enhanced Preview Area */}
-                <div className="flex flex-col justify-center">
+
+                {/* Preview Section */}
+                <div className="flex flex-col">
+                    <div className="flex items-center mb-4">
+                        <div className="w-1 h-6 bg-indigo-500 rounded-full mr-3"></div>
+                        <h3 className="text-lg font-semibold text-white">Preview</h3>
+                    </div>
+
                     {previewUrl ? (
-                        <div className="bg-gray-900/80 backdrop-blur-md rounded-xl overflow-hidden border border-gray-700/50 shadow-xl transform transition-all duration-300 hover:shadow-cyan-500/20">
-                            <div className="bg-gradient-to-r from-gray-900 to-gray-800 py-3 px-4 border-b border-gray-700/50 flex items-center">
-                                <div className="w-2 h-2 rounded-full bg-red-600 mr-2"></div>
-                                <div className="w-2 h-2 rounded-full bg-yellow-600 mr-2"></div>
-                                <div className="w-2 h-2 rounded-full bg-green-600 mr-2"></div>
-                                <p className="text-xs font-semibold text-gray-200 ml-2">Image Preview</p>
+                        <div className="bg-black/30 backdrop-blur-md rounded-2xl overflow-hidden border border-cyan-500/30 shadow-2xl transition-all duration-300 hover:shadow-cyan-500/20 h-full">
+                            {/* Header bar */}
+                            <div className="bg-gradient-to-r from-gray-900 to-gray-800 py-2.5 px-4 border-b border-gray-800 flex items-center">
+                                <div className="flex space-x-2 mr-3">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                                </div>
+                                <p className="text-xs font-medium text-gray-400 ml-1">image-preview.jpg</p>
                             </div>
-                            <div className="p-4 flex justify-center bg-gradient-to-b from-transparent to-gray-900/30">
-                                <div className="relative group">
+
+                            {/* Image container */}
+                            <div className="p-6 flex justify-center items-center bg-gradient-to-b from-transparent to-gray-900/30 h-full">
+                                <div className="relative group rounded-lg overflow-hidden">
                                     <img
                                         src={previewUrl}
                                         alt="Preview"
-                                        className="rounded object-contain max-h-48 border border-gray-700 shadow-md group-hover:scale-105 transition-transform duration-300"
+                                        className="rounded-lg object-contain max-h-60 shadow-xl group-hover:scale-105 transition-transform duration-500"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-gray-900/50 rounded-xl border border-gray-700/50 h-full flex flex-col items-center justify-center p-8 shadow-inner">
-                            <div className="w-16 h-16 rounded-full bg-gray-800/50 flex items-center justify-center mb-4">
-                                <Camera className="w-8 h-8 text-gray-500" />
+                        <div className="bg-black/20 backdrop-blur-sm rounded-2xl border border-cyan-500/30 h-full flex flex-col items-center justify-center p-8 shadow-inner">
+                            <div className="w-20 h-20 rounded-full bg-gray-800/50 backdrop-blur-lg flex items-center justify-center mb-5 opacity-60">
+                                <Camera className="w-10 h-10 text-gray-500" />
                             </div>
-                            <p className="mb-2 text-gray-400 font-semibold">No Image Selected</p>
-                            <p className="text-xs text-gray-500">Preview will appear here</p>
+                            <p className="mb-2 text-gray-400 font-medium">No Image Selected</p>
+                            <p className="text-xs text-gray-500 text-center max-w-xs">Upload an image to see the preview here</p>
                         </div>
                     )}
                 </div>

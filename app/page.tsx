@@ -53,13 +53,6 @@ export default function Home() {
               <Camera className="h-8 w-8 text-cyan-400 animate-pulse" />
               <h1 className="text-3xl font-extrabold text-white tracking-tight">PlateDetect</h1>
             </div>
-            <div className="hidden md:flex items-center space-x-4 text-sm font-medium">
-              <span className="text-cyan-400">AI-Powered</span>
-              <span className="text-gray-500">•</span>
-              <span className="text-gray-300">Real-time Processing</span>
-              <span className="text-gray-500">•</span>
-              <span className="text-gray-300">High Accuracy</span>
-            </div>
           </div>
         </header>
 

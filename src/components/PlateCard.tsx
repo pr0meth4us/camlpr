@@ -30,7 +30,7 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
         "MONDULKIRI": "មណ្ឌលគិរី",
         "PHNOM PENH": "ភ្នំពេញ",
         "PREAH VIHEAR": "ព្រះវិហារ",
-        "PREY VENG": "ព្រៃវង់",
+        "PREY VENG": "ព្រៃវែង",
         "PURSAT": "ពោធិ៍សាត់",
         "RATANAKIRI": "រតនៈគិរី",
         "SIEM REAP": "សៀមរាប",
@@ -42,9 +42,10 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
         "ODDAR MEANCHEY": "ឧត្ដរមានជ័យ",
         "KEP": "កែប",
         "PAILIN": "ប៉ៃលិន",
+        "UNREADABLE": "អានមិនដាច់"
     };
     const normalized = province.toUpperCase();
-    const khmerText = provinceToKhmer[normalized] || provinceToKhmer["PHNOM PENH"];
+    const khmerText = provinceToKhmer[normalized] || provinceToKhmer["UNREADABLE"];
 
     return (
         <div
@@ -95,7 +96,7 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
                     padding: '4px 0',
                     textAlign: 'center',
                     fontFamily: 'Noto Serif Khmer, serif',
-                    fontSize: '18px',
+                    fontSize: '40px',
                     fontWeight: 700,
                     color: '#1e3a8a'
                 }}>
@@ -109,7 +110,7 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
                     alignItems: 'center',
                     padding: '16px 0',
                     fontFamily: 'monospace',
-                    fontSize: '32px',
+                    fontSize: '75px',
                     fontWeight: 700,
                     color: '#1e3a8a'
                 }}>

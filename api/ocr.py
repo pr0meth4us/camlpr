@@ -13,7 +13,6 @@ def ocr_parseq(img_crop, parseq_model, transform, device):
         length = len(decoded)
         if length > 0:
             max_p = probs.max(-1).values[0][:length]  # top prob per timestep
-            # geometric-mean confidence
             conf = max_p.log().mean().exp().item() * 100
         else:
             conf = 0.0

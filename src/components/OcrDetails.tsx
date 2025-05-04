@@ -1,10 +1,11 @@
 import React from "react";
-import { MapPin, BarChart } from "lucide-react";
+import { MapPin, BarChart, Hash } from "lucide-react";
 
 interface OcrResult {
     detected_province: string;
     corrected_province: string;
     confidence: number;
+    plate: string; // Added to include the plate number
 }
 
 interface OcrDetailsProps {
@@ -13,7 +14,7 @@ interface OcrDetailsProps {
 
 export default function OcrDetails({ ocrResults }: OcrDetailsProps) {
     if (!ocrResults.length) return null;
-    const { detected_province, corrected_province, confidence } = ocrResults[0];
+    const { detected_province, corrected_province, confidence, plate } = ocrResults[0];
 
     const getConfidenceMeta = (conf: number) => {
         if (conf > 85) return { bg: "bg-gradient-to-r from-cyan-500 to-teal-500", text: "text-white", label: "High" };
@@ -35,8 +36,17 @@ export default function OcrDetails({ ocrResults }: OcrDetailsProps) {
                     </div>
                 </div>
 
+                {/* Plate Number Metric */}
+                <div className="flex items-center bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/80 transition-all duration-200">
+                    <Hash className="w-6 h-6 text-cyan-400 mr-4" />
+                    <div>
+                        <p className="text-xs text-gray-400 font-medium">Plate Number</p>
+                        <p className="text-lg text-white font-bold tracking-tight">{plate || "—"}</p>
+                    </div>
+                </div>
+
                 {/* Confidence Metric */}
-                <div className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/80 transition-all duration-200">
+                <div className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/80 transition-all duration-200 sm:col-span-2">
                     <p className="text-xs text-gray-400 font-medium mb-1">Recognition Confidence</p>
                     <div className="flex items-center justify-between">
                         <span className="text-2xl text-white font-extrabold">{confidence.toFixed(1)}%</span>

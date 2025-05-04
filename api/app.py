@@ -1,17 +1,21 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+import io
+import re
+
+import cv2
 import numpy as np
 from PIL import Image
-import io
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 from config import DETECT_CONF, SEG_CONF
+from image_processing import crop, to_data_url, enhance_plate
 from models import detector, segmenter, parseq_model, device, transform
-from image_processing import crop, to_data_url
 from ocr import ocr_parseq
-from province_correction import correct_province
+from province_correction import correct_province, correct_plate
 
 app = Flask(__name__)
 CORS(app)
+
 
 @app.route("/api/inference", methods=["POST"])
 def inference():
@@ -30,11 +34,11 @@ def inference():
 
     plate_box = max(boxes, key=lambda b: (b[2] - b[0]) * (b[3] - b[1]))
     plate_crop = crop(pil, plate_box)
+    plate_crop = enhance_plate(plate_crop)
 
     # 2) Draw the box for display
     vis = arr.copy()
     x1, y1, x2, y2 = map(int, plate_box)
-    import cv2
     cv2.rectangle(vis, (x1, y1), (x2, y2), (0, 255, 0), 2)
     vis_img = Image.fromarray(vis)
 
@@ -56,23 +60,35 @@ def inference():
     confs = []
 
     if number_crop:
-        txt, c = ocr_parseq(number_crop, parseq_model, transform, device)
-        plate_txt = txt
+        raw_txt, c = ocr_parseq(number_crop, parseq_model, transform, device)
+        plate_txt = re.sub(r'[^A-Za-z0-9\-.]', '', raw_txt)  # Flexible for all cases initially
         confs.append(c)
     if province_crop:
-        txt, c = ocr_parseq(province_crop, parseq_model, transform, device)
-        province_txt = txt
+        raw_txt, c = ocr_parseq(province_crop, parseq_model, transform, device)
+        province_txt = re.sub(r'[^A-Za-z0-9\-.]', '', raw_txt)
         confs.append(c)
 
     avg_conf = round(sum(confs) / len(confs), 2) if confs else 0.0
 
     # 5) Correct province name
-    corrected_province = correct_province(province_txt) if province_txt else ""
+    corrected_province = correct_province(province_txt) if province_txt else "unreadable"
 
-    # 6) Pack images as base64 for front-end
+    # 6) Adjust plate number based on province
+    if corrected_province == "Cambodia":
+        format_valid = True
+    else:
+        if re.match(r'^\d[A-Za-z]{2}-\d{4}$', plate_txt):
+            plate_txt = correct_plate(plate_txt, "nll-nnnn")
+            format_valid = True
+        elif re.match(r'^\d[A-Za-z]-\d{4}$', plate_txt):
+            plate_txt = correct_plate(plate_txt, "nl-nnnn")
+            format_valid = True
+        else:
+            format_valid = False if corrected_province != "unreadable" else False
+
     image_paths = [
-        to_data_url(vis_img, "JPEG"),  # full w/ box
-        to_data_url(plate_crop, "JPEG"),  # cropped plate
+        to_data_url(vis_img, "JPEG"),
+        to_data_url(plate_crop, "JPEG"),
         to_data_url(number_crop, "JPEG") if number_crop else None,
         to_data_url(province_crop, "JPEG") if province_crop else None,
     ]
@@ -81,10 +97,12 @@ def inference():
         "plate": plate_txt,
         "detected_province": province_txt,
         "corrected_province": corrected_province,
-        "confidence": avg_conf
+        "confidence": avg_conf,
+        "format_valid": format_valid
     }]
 
     return jsonify(image_paths=image_paths, ocr_results=ocr_results)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5328)
