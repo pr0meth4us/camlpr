@@ -45,32 +45,32 @@ export default function Home() {
   };
 
   return (
-      <div className="min-h-screen bg-gray-900 text-gray-200">
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 ">
         {/* Sleek Header */}
-        <header className="bg-gray-950 py-4 shadow-lg border-b border-gray-800">
+        <header className="bg-gradient-to-r from-indigo-900 to-gray-900 py-4 shadow-xl border-b border-gray-800/50">
           <div className="container mx-auto px-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Camera className="h-6 w-6 text-indigo-400" />
-              <h1 className="text-2xl font-bold text-white">PlateDetect</h1>
+              <Camera className="h-8 w-8 text-cyan-400 animate-pulse" />
+              <h1 className="text-3xl font-extrabold text-white tracking-tight">PlateDetect</h1>
             </div>
-            <div className="hidden md:flex items-center space-x-4 text-sm">
-              <span className="text-indigo-400">AI-Powered</span>
-              <span>•</span>
-              <span>Real-time Processing</span>
-              <span>•</span>
-              <span>High Accuracy</span>
+            <div className="hidden md:flex items-center space-x-4 text-sm font-medium">
+              <span className="text-cyan-400">AI-Powered</span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-300">Real-time Processing</span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-300">High Accuracy</span>
             </div>
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-12">
           {/* Upload Section */}
-          <div className="mb-10">
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
-              <span className="w-1 h-6 bg-indigo-500 rounded mr-2"></span>
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+              <span className="w-1.5 h-8 bg-cyan-500 rounded mr-3"></span>
               Upload License Plate Image
             </h2>
-            <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <div className="bg-gray-900/80 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden border border-gray-700/50">
               <ImageUpload
                   onImageChange={handleImageChange}
                   previewUrl={previewUrl}
@@ -81,41 +81,39 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Results Section - Only shown when there are results */}
+          {/* Results Section */}
           {(results || ocrResults) && (
-              <div className="mb-10">
-                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
-                  <span className="w-1 h-6 bg-indigo-500 rounded mr-2"></span>
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                  <span className="w-1.5 h-8 bg-cyan-500 rounded mr-3"></span>
                   Detection Results
                 </h2>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* License Plate Card - Column 1 */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* License Plate Card */}
                   {ocrResults && ocrResults[0] && (
-                      <div className="bg-gray-800 rounded-xl shadow-xl p-8 flex justify-center items-center w-full max-w-2xl mx-auto">
-                        <div className="w-full">
+                      <div className="bg-gray-900/80 rounded-xl shadow-2xl p-8 flex justify-center items-center w-full max-w-2xl mx-auto">
                           <PlateCard
                               plate={ocrResults[0].plate}
                               province={ocrResults[0].corrected_province}
                               qrUrl={undefined}
                           />
+                      </div>
+                  )}
+                  {/* OCR Details */}
+                  {ocrResults && (
+                      <div className="bg-gray-900/80 rounded-xl shadow-2xl p-6 flex flex-col min-h-[300px]">
+                        <h3 className="text-lg font-semibold text-cyan-400 mb-4 self-start">OCR Analysis</h3>
+                        <div className="flex-1 flex items-center justify-center">
+                          <div className="w-full max-w-lg mx-auto bg-gray-900/80 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-gray-700/50 hover:border-indigo-500/50 transition-all duration-300">
+                            <OcrDetails ocrResults={ocrResults} />
+                          </div>
                         </div>
                       </div>
                   )}
-
-
-                  {/* OCR Details - Column 2 */}
-                  {ocrResults && (
-                      <div className="bg-gray-800 rounded-lg shadow-lg p-6">
-                        <h3 className="text-lg font-medium text-indigo-400 mb-4">OCR Analysis</h3>
-                        <OcrDetails ocrResults={ocrResults} />
-                      </div>
-                  )}
-
-                  {/* Detection Images - Column 3 (spans full width on smaller screens) */}
+                  {/* Detection Images */}
                   {results && results.length >= 4 && (
-                      <div className="lg:col-span-1 bg-gray-800 rounded-lg shadow-lg p-6">
-                        <h3 className="text-lg font-medium text-indigo-400 mb-4">Image Processing</h3>
+                      <div className="lg:col-span-1 bg-gray-900/80 rounded-xl shadow-2xl p-6">
+                        <h3 className="text-lg font-semibold text-cyan-400 mb-4">Image Processing</h3>
                         <DetectionResults imagePaths={results} />
                       </div>
                   )}
@@ -124,9 +122,14 @@ export default function Home() {
           )}
         </main>
 
-        <footer className="bg-gray-950 py-4 border-t border-gray-800 mt-auto">
-          <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
+        <footer className="bg-gray-950 py-6 border-t border-gray-800/50">
+          <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
             <p>© {new Date().getFullYear()} PlateDetect AI • License Plate Recognition System</p>
+            <div className="mt-2 flex justify-center space-x-4">
+              <a href="#" className="hover:text-cyan-400 transition-colors">About</a>
+              <a href="#" className="hover:text-cyan-400 transition-colors">Contact</a>
+              <a href="#" className="hover:text-cyan-400 transition-colors">Privacy</a>
+            </div>
           </div>
         </footer>
       </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MapPin } from "lucide-react";
 
 interface PlateCardProps {
@@ -8,74 +8,149 @@ interface PlateCardProps {
 }
 
 export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
-    const [prefix, number] = plate.split(/[-\s]/).filter(Boolean);
+    const [isHovered, setIsHovered] = useState(false);
 
+    // Split plate
+    const parts = plate.split(/[-\s]/).filter(Boolean);
+    const [prefix, number] = parts.length === 2 ? parts : ["1FW", "9554"];
+
+    // Province mapping
     const provinceToKhmer: Record<string, string> = {
-        "CAMBODIA":           "កម្ពុជា",
-        "BANTEAY MEANCHEY":   "បន្ទាយមានជ័យ",
-        "BATTAMBANG":         "បាត់ដំបង",
-        "KAMPONG CHAM":       "កំពង់ចាម",
-        "KAMPONG CHHNANG":    "កំពង់ឆ្នាំង",
-        "KAMPONG SPEU":       "កំពង់ស្ពឺ",
-        "KAMPONG THOM":       "កំពង់ធំ",
-        "KAMPOT":             "កំពត",
-        "KANDAL":             "កណ្តាល",
-        "KOH KONG":           "កោះកុង",
-        "KRATIE":             "ក្រចេះ",
-        "MONDULKIRI":         "មណ្ឌលគិរី",
-        "PHNOM PENH":         "ភ្នំពេញ",
-        "PREAH VIHEAR":       "ព្រះវិហារ",
-        "PREY VENG":          "ព្រៃវង់",
-        "PURSAT":             "ពោធិ៍សាត់",
-        "RATANAKIRI":         "រតនៈគិរី",
-        "SIEM REAP":          "សៀមរាប",
-        "PREAH SIHANOUK":     "ព្រះសីហនុ",
-        "STUNG TRENG":        "ស្ទឹងត្រែង",
-        "SVAY RIENG":         "ស្វាយរៀង",
-        "TAKEO":              "តាកែវ",
-        "TBONG KHMM":         "ត្បូងឃ្មុំ",
-        "ODDAR MEANCHEY":     "ឧត្ដរមានជ័យ",
-        "KEP":                "កែប",
-        "PAILIN":             "ប៉ៃលិន",
+        "CAMBODIA": "កម្ពុជា",
+        "BANTEAY MEANCHEY": "បន្ទាយមានជ័យ",
+        "BATTAMBANG": "បាត់ដំបង",
+        "KAMPONG CHAM": "កំពង់ចាម",
+        "KAMPONG CHHNANG": "កំពង់ឆ្នាំង",
+        "KAMPONG SPEU": "កំពង់ស្ពឺ",
+        "KAMPONG THOM": "កំពង់ធំ",
+        "KAMPOT": "កំពត",
+        "KANDAL": "កណ្តាល",
+        "KOH KONG": "កោះកុង",
+        "KRATIE": "ក្រចេះ",
+        "MONDULKIRI": "មណ្ឌលគិរី",
+        "PHNOM PENH": "ភ្នំពេញ",
+        "PREAH VIHEAR": "ព្រះវិហារ",
+        "PREY VENG": "ព្រៃវង់",
+        "PURSAT": "ពោធិ៍សាត់",
+        "RATANAKIRI": "រតនៈគិរី",
+        "SIEM REAP": "សៀមរាប",
+        "PREAH SIHANOUK": "ព្រះសីហនុ",
+        "STUNG TRENG": "ស្ទឹងត្រែង",
+        "SVAY RIENG": "ស្វាយរៀង",
+        "TAKEO": "តាកែវ",
+        "TBONG KHMM": "ត្បូងឃ្មុំ",
+        "ODDAR MEANCHEY": "ឧត្ដរមានជ័យ",
+        "KEP": "កែប",
+        "PAILIN": "ប៉ៃលិន",
     };
-
-    const khmer = provinceToKhmer[province.toUpperCase()] || provinceToKhmer["PHNOM PENH"];
+    const normalized = province.toUpperCase();
+    const khmerText = provinceToKhmer[normalized] || provinceToKhmer["PHNOM PENH"];
 
     return (
-        <div className="mx-auto w-full max-w-md flex justify-center">
-            <div className="relative bg-white border-4 border-blue-600 rounded-lg shadow-xl overflow-hidden w-full">
-                {/* Mount holes */}
-                <div className="absolute top-3 left-3 w-5 h-5 bg-gray-300 rounded-full border border-gray-400" />
-                <div className="absolute top-3 right-3 w-5 h-5 bg-gray-300 rounded-full border border-gray-400" />
+        <div
+            style={{
+                margin: '0 auto',
+                width: '100%',
+                maxWidth: '400px',
+                transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                transition: 'transform 0.2s ease',
+                cursor: 'default'
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <div style={{
+                position: 'relative',
+                backgroundColor: '#fff',
+                border: '4px solid #1e3a8a',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                overflow: 'hidden',
+            }}>
+                {/* Top screws */}
+                <div style={{
+                    position: 'absolute', top: '8px', left: '8px',
+                    width: '12px', height: '12px',
+                    backgroundColor: '#d1d5db', borderRadius: '50%',
+                    border: '1px solid #9ca3af'
+                }} />
+                <div style={{
+                    position: 'absolute', top: '8px', right: '8px',
+                    width: '12px', height: '12px',
+                    backgroundColor: '#d1d5db', borderRadius: '50%',
+                    border: '1px solid #9ca3af'
+                }} />
 
-                {/* Khmer province line */}
-                <div className="h-14 flex items-center justify-center border-b-4 border-blue-600 bg-white pt-2">
-                    <span className="text-blue-700 text-2xl font-bold tracking-widest">{khmer}</span>
+                {/* Inner border */}
+                <div style={{
+                    position: 'absolute',
+                    top: '4px', left: '4px', right: '4px', bottom: '4px',
+                    border: '1px solid #2563eb',
+                    borderRadius: '4px',
+                    pointerEvents: 'none'
+                }} />
+
+                {/* Khmer line */}
+                <div style={{
+                    padding: '4px 0',
+                    textAlign: 'center',
+                    fontFamily: 'Noto Serif Khmer, serif',
+                    fontSize: '18px',
+                    fontWeight: 700,
+                    color: '#1e3a8a'
+                }}>
+                    {khmerText}
                 </div>
 
-                {/* Plate number area */}
-                <div className="relative flex items-center justify-center py-10 bg-white px-6">
-                    {qrUrl && (
-                        <img
-                            src={qrUrl}
-                            alt="QR code"
-                            className="absolute top-2 right-3 w-8 h-8"
-                        />
-                    )}
-                    <div className="text-blue-700 font-mono text-7xl font-extrabold tracking-widest w-full text-center flex justify-center items-center space-x-4">
-                        <span>{prefix}</span>
-                        <span className="text-blue-700">-</span>
-                        <span>{number}</span>
-                    </div>
+                {/* Plate number */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '16px 0',
+                    fontFamily: 'monospace',
+                    fontSize: '32px',
+                    fontWeight: 700,
+                    color: '#1e3a8a'
+                }}>
+                    <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>{prefix}</span>
+                    <span style={{ margin: '0 8px', color: '#1e3a8a' }}>-</span>
+                    <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>{number}</span>
                 </div>
 
-                {/* English province line */}
-                <div className="h-12 flex items-center justify-center border-t-4 border-blue-600 bg-white">
-                    <span className="text-red-600 text-lg font-bold uppercase tracking-widest">{province}</span>
+                {/* Separator */}
+                <div style={{
+                    height: '2px',
+                    backgroundColor: '#2563eb',
+                    margin: '0 16px'
+                }} />
+
+                {/* English province */}
+                <div style={{
+                    padding: '6px 0',
+                    textAlign: 'center',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#dc2626',
+                    textTransform: 'uppercase'
+                }}>
+                    {normalized}
                 </div>
+
+                {/* Optional QR */}
+                {qrUrl && (
+                    <img
+                        src={qrUrl}
+                        alt="QR code"
+                        style={{
+                            position: 'absolute',
+                            top: '12px', right: '12px',
+                            width: '24px', height: '24px'
+                        }}
+                    />
+                )}
             </div>
-            {/* Blue underline accent */}
-            <div className="h-2 bg-blue-600 w-full mt-1 rounded-b" />
         </div>
     );
 }
