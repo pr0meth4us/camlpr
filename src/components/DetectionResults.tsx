@@ -1,32 +1,45 @@
 import React from "react";
 
 interface DetectionResultsProps {
-  imagePaths: string[];
+    imagePaths: string[];
 }
 
 export default function DetectionResults({ imagePaths }: DetectionResultsProps) {
-  const labels = ["Full w/ box", "Cropped Plate", "Number Segment", "Province Segment"];
+    const labels = ["Full w/ box", "Cropped Plate", "Number Segment", "Province Segment"];
 
-  return (
-    <div className="w-full max-w-4xl mb-8">
-      <div className="bg-white p-6 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-semibold mb-4 text-blue-800 border-b pb-2">
-          Detection & Segmentation
-        </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {labels.map((label, i) => (
-            <div key={i} className="flex flex-col items-center bg-gray-50 p-3 rounded-lg">
-              <h3 className="mb-2 font-medium text-gray-700">{label}</h3>
-              <img
-                src={imagePaths[i]}
-                alt={label}
-                className="rounded-lg border border-gray-200 object-contain"
-                style={{ height: "120px", width: "100%" }}
-              />
-            </div>
-          ))}
+    // Icons/indicators for each detection type
+    const typeIndicators = [
+        "🎯", // Target/detection
+        "🔍", // Magnifying glass for cropped
+        "🔢", // Numbers
+        "🏛️", // Building/province
+    ];
+
+    return (
+        <div className="space-y-4">
+            {labels.map((label, i) => (
+                <div
+                    key={i}
+                    className="bg-gray-700/50 rounded-lg overflow-hidden border border-gray-700 transition-all hover:border-indigo-500/50"
+                >
+                    <div className="flex items-center justify-between bg-gray-800 py-2 px-3 border-b border-gray-700">
+                        <div className="flex items-center space-x-2">
+                            <span className="text-lg" aria-hidden="true">{typeIndicators[i]}</span>
+                            <p className="text-xs font-medium text-gray-300">{label}</p>
+                        </div>
+                    </div>
+                    <div className="p-3">
+                        <div className="bg-black/30 rounded-lg overflow-hidden">
+                            <img
+                                src={imagePaths[i]}
+                                alt={label}
+                                className="w-full object-contain mx-auto"
+                                style={{ height: "100px" }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            ))}
         </div>
-      </div>
-    </div>
-  );
+    );
 }

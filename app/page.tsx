@@ -45,41 +45,85 @@ export default function Home() {
   };
 
   return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <header className="bg-blue-800 text-white p-6 shadow-md">
-          <div className="max-w-6xl mx-auto flex items-center justify-center">
-            <Camera className="w-8 h-8 mr-3" />
-            <h1 className="text-3xl font-bold">License Plate Detection & OCR</h1>
+      <div className="min-h-screen bg-gray-900 text-gray-200">
+        {/* Sleek Header */}
+        <header className="bg-gray-950 py-4 shadow-lg border-b border-gray-800">
+          <div className="container mx-auto px-4 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Camera className="h-6 w-6 text-indigo-400" />
+              <h1 className="text-2xl font-bold text-white">PlateDetect</h1>
+            </div>
+            <div className="hidden md:flex items-center space-x-4 text-sm">
+              <span className="text-indigo-400">AI-Powered</span>
+              <span>•</span>
+              <span>Real-time Processing</span>
+              <span>•</span>
+              <span>High Accuracy</span>
+            </div>
           </div>
         </header>
 
-        <main className="max-w-6xl mx-auto p-6 flex flex-col items-center">
-          <ImageUpload
-              onImageChange={handleImageChange}
-              previewUrl={previewUrl}
-              onSubmit={handleSubmit}
-              loading={loading}
-              error={error}
-          />
+        <main className="container mx-auto px-4 py-8">
+          {/* Upload Section */}
+          <div className="mb-10">
+            <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
+              <span className="w-1 h-6 bg-indigo-500 rounded mr-2"></span>
+              Upload License Plate Image
+            </h2>
+            <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+              <ImageUpload
+                  onImageChange={handleImageChange}
+                  previewUrl={previewUrl}
+                  onSubmit={handleSubmit}
+                  loading={loading}
+                  error={error}
+              />
+            </div>
+          </div>
 
-          {ocrResults && ocrResults[0] && (
-              <div className="w-full flex justify-center mb-8">
-                <PlateCard
-                    plate={ocrResults[0].plate}
-                    province={ocrResults[0].corrected_province}
-                    qrUrl={undefined}
-                />
+          {/* Results Section - Only shown when there are results */}
+          {(results || ocrResults) && (
+              <div className="mb-10">
+                <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
+                  <span className="w-1 h-6 bg-indigo-500 rounded mr-2"></span>
+                  Detection Results
+                </h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* License Plate Card - Column 1 */}
+                  {ocrResults && ocrResults[0] && (
+                      <div className="bg-gray-800 rounded-lg shadow-lg p-6 flex justify-center">
+                        <PlateCard
+                            plate={ocrResults[0].plate}
+                            province={ocrResults[0].corrected_province}
+                            qrUrl={undefined}
+                        />
+                      </div>
+                  )}
+
+                  {/* OCR Details - Column 2 */}
+                  {ocrResults && (
+                      <div className="bg-gray-800 rounded-lg shadow-lg p-6">
+                        <h3 className="text-lg font-medium text-indigo-400 mb-4">OCR Analysis</h3>
+                        <OcrDetails ocrResults={ocrResults} />
+                      </div>
+                  )}
+
+                  {/* Detection Images - Column 3 (spans full width on smaller screens) */}
+                  {results && results.length >= 4 && (
+                      <div className="lg:col-span-1 bg-gray-800 rounded-lg shadow-lg p-6">
+                        <h3 className="text-lg font-medium text-indigo-400 mb-4">Image Processing</h3>
+                        <DetectionResults imagePaths={results} />
+                      </div>
+                  )}
+                </div>
               </div>
           )}
-
-          {results && results.length >= 4 && <DetectionResults imagePaths={results} />}
-
-          {ocrResults && <OcrDetails ocrResults={ocrResults} />}
         </main>
 
-        <footer className="bg-blue-900 text-white py-4 mt-auto">
-          <div className="max-w-6xl mx-auto px-6 text-center text-sm opacity-75">
-            License Plate Detection & OCR System © {new Date().getFullYear()}
+        <footer className="bg-gray-950 py-4 border-t border-gray-800 mt-auto">
+          <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© {new Date().getFullYear()} PlateDetect AI • License Plate Recognition System</p>
           </div>
         </footer>
       </div>

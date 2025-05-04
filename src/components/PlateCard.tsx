@@ -1,5 +1,5 @@
 import React from "react";
-import { Flag } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 interface PlateCardProps {
     plate: string;
@@ -9,7 +9,6 @@ interface PlateCardProps {
 
 export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
     // Split the plate number into parts for better styling
-    // Assuming standard format like "2A-1234" or similar
     const parts = plate.split(/[-\s]/).filter(Boolean);
     const firstPart = parts[0] || "";
     const secondPart = parts[1] || "";
@@ -49,34 +48,47 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
     const khmerProvince = provinceToKhmer[province.toUpperCase()] || "ភ្នំពេញ";
 
     return (
-        <div className="w-96 h-48 bg-white border-4 border-blue-800 rounded-md shadow-xl overflow-hidden relative">
-            {/* Top blue bar with Khmer province name */}
-            <div className="absolute top-0 left-0 right-0 h-10 bg-blue-800 flex items-center justify-center">
-                <span className="text-xl font-semibold text-white">{khmerProvince}</span>
+        <div className="relative w-full max-w-sm overflow-hidden">
+            {/* Card container with shadow effect */}
+            <div className="relative overflow-hidden rounded-lg shadow-lg">
+                {/* Main plate background */}
+                <div className="bg-gradient-to-b from-blue-950 to-gray-900 pt-10 pb-4 px-4">
+                    {/* Khmer province name on top */}
+                    <div className="absolute top-0 left-0 right-0 h-10 bg-indigo-600 flex items-center justify-center">
+                        <span className="text-xl font-medium text-white">{khmerProvince}</span>
+                    </div>
+
+                    {/* QR code if provided */}
+                    {qrUrl && (
+                        <div className="absolute top-1 right-2">
+                            <img src={qrUrl} alt="QR code" className="w-8 h-8 object-contain" />
+                        </div>
+                    )}
+
+                    {/* Plate number */}
+                    <div className="text-center py-4 px-4 bg-gray-100 rounded-lg shadow-inner">
+                        <div className="flex items-center justify-center">
+              <span className="text-5xl font-bold text-gray-900 tracking-widest">
+                {firstPart}
+                  <span className="px-2">-</span>
+                  {secondPart}
+              </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Province name at bottom */}
+                <div className="bg-gray-800 p-3 flex items-center justify-between">
+                    <div className="flex items-center">
+                        <MapPin className="w-4 h-4 text-indigo-400 mr-2" />
+                        <span className="text-sm text-gray-300">Province:</span>
+                    </div>
+                    <span className="text-base font-semibold text-white uppercase">{province}</span>
+                </div>
             </div>
 
-            {/* QR code (if provided) */}
-            {qrUrl && (
-                <div className="absolute top-1 right-2">
-                    <img src={qrUrl} alt="QR code" className="w-8 h-8 object-contain" />
-                </div>
-            )}
-
-            {/* Main plate number */}
-            <div className="flex items-center justify-center h-full">
-                <div className="flex items-baseline">
-                    <span className="text-6xl font-bold text-blue-900 tracking-wider">{firstPart}</span>
-                    <span className="mx-2 text-6xl font-bold text-blue-900">-</span>
-                    <span className="text-6xl font-bold text-blue-900 tracking-wider">{secondPart}</span>
-                </div>
-            </div>
-
-            {/* Province name at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center">
-                <div className="bg-red-600 px-6 py-1 rounded-t-md">
-                    <span className="text-lg font-bold text-white uppercase tracking-wide">{province}</span>
-                </div>
-            </div>
+            {/* Add a subtle shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
         </div>
     );
 }
