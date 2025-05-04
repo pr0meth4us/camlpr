@@ -1,18 +1,28 @@
-# syntax=docker/dockerfile:1
+# Use slim Python image
 FROM python:3.11-slim
 
-# Set work directory
+# Install any OS-level deps you need for cv2/Paddle/etc
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       gcc ffmpeg libsm6 libxext6 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Install dependencies
+# Copy requirements and install
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --upgrade pip \
+    && pip install -r requirements.txt
 
-# Copy rest of your Flask backend
-COPY api .
+# Copy your Flask code
+COPY api/ ./api
 
-# Expose port
-EXPOSE 5328
+# Tell Flask where the app is
+ENV FLASK_APP=api/app.py
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
 
-# Run app
-CMD ["flask", "--app", "app", "run", "--host=0.0.0.0", "--port=5328"]
+EXPOSE 5000
+
+# Use Gunicorn for production-style serving (4 workers)
+CMD ["gunicorn", "api.app:app", "-w", "4", "-b", "0.0.0.0:5000"]
