@@ -92,14 +92,17 @@ export default function Home() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* License Plate Card - Column 1 */}
                   {ocrResults && ocrResults[0] && (
-                      <div className="bg-gray-800 rounded-lg shadow-lg p-6 flex justify-center">
-                        <PlateCard
-                            plate={ocrResults[0].plate}
-                            province={ocrResults[0].corrected_province}
-                            qrUrl={undefined}
-                        />
+                      <div className="bg-gray-800 rounded-xl shadow-xl p-8 flex justify-center items-center w-full max-w-2xl mx-auto">
+                        <div className="w-full">
+                          <PlateCard
+                              plate={ocrResults[0].plate}
+                              province={ocrResults[0].corrected_province}
+                              qrUrl={undefined}
+                          />
+                        </div>
                       </div>
                   )}
+
 
                   {/* OCR Details - Column 2 */}
                   {ocrResults && (
