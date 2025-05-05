@@ -1,15 +1,14 @@
 import torch
 import torch.nn.functional as F
 
-
-def ocr_parseq(img_crop, parseq_model, transform, device):
+def ocr_parseq(img_crop, parseq_model, transform, device, tokenizer):
     """Perform OCR on an image crop using the PARSeq model."""
     img = img_crop.convert("RGB")
     inp = transform(img).unsqueeze(0).to(device)
     with torch.no_grad():
-        out = parseq_model(inp)  # raw logits [B, T, V]
+        out = parseq_model(tokenizer, inp)  # raw logits [B, T, V]
         probs = F.softmax(out, dim=-1)  # [B, T, V]
-        decoded = parseq_model.tokenizer.decode(probs)[0][0]
+        decoded = tokenizer.decode(probs)[0]  # Decode using the tokenizer
         length = len(decoded)
         if length > 0:
             max_p = probs.max(-1).values[0][:length]  # top prob per timestep

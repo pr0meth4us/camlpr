@@ -9,13 +9,12 @@ from flask_cors import CORS
 
 from config import DETECT_CONF, SEG_CONF
 from image_processing import crop, to_data_url, enhance_plate
-from models import detector, segmenter, parseq_model, device, transform
+from models import detector, segmenter, parseq_model, device, transform, tokenizer  # Add tokenizer
 from ocr import ocr_parseq
-from province_correction import correct_province, correct_plate
+from correction import correct_province, correct_plate
 
 app = Flask(__name__)
 CORS(app)
-
 
 @app.route("/api/inference", methods=["POST"])
 def inference():
@@ -60,11 +59,13 @@ def inference():
     confs = []
 
     if number_crop:
-        raw_txt, c = ocr_parseq(number_crop, parseq_model, transform, device)
+        raw_txt, c = ocr_parseq(number_crop, parseq_model, transform, device, tokenizer)  # Pass tokenizer
+        print(raw_txt)
         plate_txt = re.sub(r'[^A-Za-z0-9\-.]', '', raw_txt)  # Flexible for all cases initially
         confs.append(c)
     if province_crop:
-        raw_txt, c = ocr_parseq(province_crop, parseq_model, transform, device)
+        raw_txt, c = ocr_parseq(province_crop, parseq_model, transform, device, tokenizer)  # Pass tokenizer
+        print(raw_txt)
         province_txt = re.sub(r'[^A-Za-z0-9\-.]', '', raw_txt)
         confs.append(c)
 
@@ -102,7 +103,6 @@ def inference():
     }]
 
     return jsonify(image_paths=image_paths, ocr_results=ocr_results)
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5328)
