@@ -1,19 +1,18 @@
 import torch
 from ultralytics import YOLO
 from torchvision import transforms
-from config import DETECT_WEIGHTS, SEG_WEIGHTS
+from config import DETECT_WEIGHTS, SEG_WEIGHTS, OCR_WEIGHTS
 
-# YOLO models
 detector = YOLO(DETECT_WEIGHTS)
 segmenter = YOLO(SEG_WEIGHTS)
 
-# PARSeq model
 device = "cuda" if torch.cuda.is_available() else "cpu"
-parseq_model = torch.hub.load(
-    "baudm/parseq", "parseq", pretrained=True, trust_repo=True
+parseq_model = torch.load(
+    OCR_WEIGHTS,
+    map_location=device
 ).to(device).eval()
 
-# PARSeq preprocessing
+# preprocessing
 transform = transforms.Compose([
     transforms.Resize((32, 128)),
     transforms.ToTensor(),

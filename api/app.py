@@ -1,17 +1,16 @@
 import io
 import re
-
 import cv2
 import numpy as np
+
 from PIL import Image
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
 from config import DETECT_CONF, SEG_CONF
 from image_processing import crop, to_data_url, enhance_plate
 from models import detector, segmenter, parseq_model, device, transform
 from ocr import ocr_parseq
-from province_correction import correct_province, correct_plate
+from correction import correct_province, correct_plate
 
 app = Flask(__name__)
 CORS(app)
@@ -62,9 +61,11 @@ def inference():
     if number_crop:
         raw_txt, c = ocr_parseq(number_crop, parseq_model, transform, device)
         plate_txt = re.sub(r'[^A-Za-z0-9\-.]', '', raw_txt)  # Flexible for all cases initially
+        print(raw_txt)
         confs.append(c)
     if province_crop:
         raw_txt, c = ocr_parseq(province_crop, parseq_model, transform, device)
+        print(raw_txt)
         province_txt = re.sub(r'[^A-Za-z0-9\-.]', '', raw_txt)
         confs.append(c)
 
