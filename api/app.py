@@ -11,7 +11,7 @@ from config import DETECT_CONF, SEG_CONF
 from image_processing import crop, to_data_url, enhance_plate
 from models import detector, segmenter, parseq_model, device, transform
 from ocr import ocr_parseq
-from province_correction import correct_province, correct_plate
+from correction import correct_province, correct_plate
 
 app = Flask(__name__)
 CORS(app)
