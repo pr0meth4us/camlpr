@@ -17,15 +17,3 @@ def ocr_parseq(img_crop, parseq_model, transform, device):
         else:
             conf = 0.0
     return decoded, conf
-
-# download_full_parseq.py
-import torch
-
-model = torch.hub.load(
-    "baudm/parseq",
-    "parseq",
-    pretrained=True,
-    trust_repo=True
-)
-torch.save(model, "/Users/nicksng/Desktop/school/aupp/code/nextjs-flask/api/models/parseq_full_model.pt")
-print("Saved full model to api/models/parseq_full_model.pt")

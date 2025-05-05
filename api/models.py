@@ -3,9 +3,11 @@ from ultralytics import YOLO
 from torchvision import transforms
 from config import DETECT_WEIGHTS, SEG_WEIGHTS, OCR_WEIGHTS
 
+# YOLO models (local weights)
 detector = YOLO(DETECT_WEIGHTS)
 segmenter = YOLO(SEG_WEIGHTS)
 
+# PARSeq full-model load
 device = "cuda" if torch.cuda.is_available() else "cpu"
 parseq_model = torch.load(
     OCR_WEIGHTS,
