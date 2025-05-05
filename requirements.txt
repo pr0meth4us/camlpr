@@ -10,3 +10,6 @@ thefuzz
 roboflow
 torch
 torchvision
+pytorch_lightning
+timm
+nltk
