@@ -6,11 +6,11 @@ import numpy as np
 from PIL import Image
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from config import DETECT_CONF, SEG_CONF
-from image_processing import crop, to_data_url, enhance_plate
-from models import detector, segmenter, parseq_model, device, transform
-from ocr import ocr_parseq
-from correction import correct_province, correct_plate
+from api.config import DETECT_CONF, SEG_CONF
+from api.image_processing import crop, to_data_url, enhance_plate
+from api.models import detector, segmenter, parseq_model, device, transform
+from api.ocr import ocr_parseq
+from api.correction import correct_province, correct_plate
 
 app = Flask(__name__)
 CORS(app)
@@ -103,6 +103,7 @@ def inference():
     }]
 
     return jsonify(image_paths=image_paths, ocr_results=ocr_results)
+
 
 @app.route('/health', methods=['GET'])
 def health_check():

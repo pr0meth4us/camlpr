@@ -1,28 +1,27 @@
-# Use slim Python image
 FROM python:3.11-slim
 
-# Install any OS-level deps you need for cv2/Paddle/etc
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       gcc ffmpeg libsm6 libxext6 \
-    && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends gcc ffmpeg libsm6 libxext6 \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy requirements and install
+# Only reinstall deps when requirements.txt changes
+# 1) Copy only requirements & install
 COPY requirements.txt .
 RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+ && pip install --no-cache-dir -r requirements.txt \
+ && pip install gunicorn
 
-# Copy your Flask code
-COPY api/ ./api
+# 2) Bring in your models (from api/models → /app/models)
+COPY api/models/ ./models/
 
-# Tell Flask where the app is
-ENV FLASK_APP=api/app.py
-ENV FLASK_ENV=production
-ENV PYTHONUNBUFFERED=1
+# 3) Bring in the rest of your code
+COPY api/ ./api/
 
-EXPOSE 5000
+ENV FLASK_APP=api/app.py \
+    FLASK_ENV=production \
+    PYTHONUNBUFFERED=1
 
-# Use Gunicorn for production-style serving (4 workers)
-CMD ["gunicorn", "api.app:app", "-w", "4", "-b", "0.0.0.0:5000"]
+EXPOSE 5328
+CMD ["gunicorn", "api.app:app", "-w", "4", "-b", "0.0.0.0:5328"]

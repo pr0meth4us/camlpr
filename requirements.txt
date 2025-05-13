@@ -4,7 +4,6 @@ Pillow
 ultralytics
 numpy
 opencv-python
-paddlepaddle
 paddleocr
 thefuzz
 roboflow
@@ -13,3 +12,4 @@ torchvision
 pytorch_lightning
 timm
 nltk
+gunicorn
