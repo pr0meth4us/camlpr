@@ -11,10 +11,10 @@ from api.image_processing import crop, to_data_url, enhance_plate
 from api.models import detector, segmenter, parseq_model, device, transform
 from api.ocr import ocr_parseq
 from api.correction import correct_province, correct_plate
+from api.cors import init_cors
 
 app = Flask(__name__)
-CORS(app)
-
+init_cors(app)
 
 @app.route("/api/inference", methods=["POST"])
 def inference():
