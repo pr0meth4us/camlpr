@@ -13,7 +13,8 @@ RUN pip install --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt \
  && pip install gunicorn
 
-# 2) Bring in your models (from api/models → /app/models)
+COPY api/parseq/strhub ./strhub
+RUN pip install --no-cache-dir ./strhub \
 COPY api/models/ ./models/
 
 # 3) Bring in the rest of your code
