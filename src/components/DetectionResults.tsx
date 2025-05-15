@@ -1,4 +1,6 @@
+// src/components/DetectionResults.tsx
 import React from "react";
+import Image from "next/image";
 import { Target, ZoomIn, Hash, Landmark } from "lucide-react";
 
 interface DetectionResultsProps {
@@ -6,12 +8,19 @@ interface DetectionResultsProps {
 }
 
 export default function DetectionResults({ imagePaths }: DetectionResultsProps) {
-    const labels = ["Full w/ box", "Cropped Plate", "Number Segment", "Province Segment"];
+    const labels = [
+        "Full w/ box",
+        "Cropped Plate",
+        "Number Segment",
+        "Province Segment",
+    ];
+
+    // add a unique key to each React element
     const typeIndicators = [
-        <Target className="w-5 h-5 text-indigo-400" />,
-        <ZoomIn className="w-5 h-5 text-indigo-400" />,
-        <Hash className="w-5 h-5 text-indigo-400" />,
-        <Landmark className="w-5 h-5 text-indigo-400" />,
+        <Target   key="icon-full"       className="w-5 h-5 text-indigo-400" />,
+        <ZoomIn   key="icon-cropped"    className="w-5 h-5 text-indigo-400" />,
+        <Hash     key="icon-number"     className="w-5 h-5 text-indigo-400" />,
+        <Landmark key="icon-province"   className="w-5 h-5 text-indigo-400" />,
     ];
 
     return (
@@ -23,17 +32,18 @@ export default function DetectionResults({ imagePaths }: DetectionResultsProps) 
                 >
                     <div className="flex items-center justify-between bg-gray-800/50 py-3 px-4 border-b border-gray-700/50">
                         <div className="flex items-center space-x-2">
-                            <span>{typeIndicators[i]}</span>
+                            {typeIndicators[i]}
                             <p className="text-sm font-semibold text-gray-200">{label}</p>
                         </div>
                     </div>
                     <div className="p-4">
-                        <div className="bg-gray-800/30 rounded-lg overflow-hidden shadow-inner">
-                            <img
+                        <div className="relative h-[120px] bg-gray-800/30 rounded-lg overflow-hidden shadow-inner">
+                            <Image
                                 src={imagePaths[i]}
                                 alt={label}
-                                className="w-full object-contain mx-auto"
-                                style={{ height: "120px" }}
+                                fill
+                                className="object-contain"
+                                sizes="100vw"
                             />
                         </div>
                     </div>
