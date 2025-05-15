@@ -9,7 +9,7 @@ export async function uploadImage(image: File): Promise<ApiResponse> {
   const form = new FormData();
   form.append("image", image);
 
-  const res = await fetch("http://localhost:5328/api/inference", {
+  const res = await fetch("https://apparent-nadeen-aupp-54d2fac0.koyeb.app/api/inference", {
     method: "POST",
     body: form,
   });
