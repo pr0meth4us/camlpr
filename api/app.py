@@ -17,9 +17,7 @@ from api.cors import init_cors
 app = Flask(__name__)
 init_cors(app)
 
-# Memory leak detection - track request counts per worker
 request_count = 0
-# Maximum number of requests before forcing a model reload
 MAX_REQUESTS_BEFORE_RELOAD = 25
 
 app = Flask(__name__)
@@ -116,7 +114,6 @@ def inference():
 
 
 def get_memory_usage():
-    """Get current memory usage in MB"""
     try:
         import psutil
         process = psutil.Process(os.getpid())
