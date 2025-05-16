@@ -5,7 +5,8 @@ docker rm -f camlpr 2>/dev/null || true
 
 # Build the Docker image
 # Using buildx to handle ARM64/AMD64 compatibility
-docker buildx build --platform linux/$(uname -m) -t pr0meth4us/camlpr:latest .
+docker build --platform linux/amd64 -t pr0meth4us/camlpr:latest .
+
 
 # Run the container with resource limits
 docker run -d \
