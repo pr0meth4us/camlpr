@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:mem": "NODE_OPTIONS='--max-old-space-size=4096' eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@types/node": "20.1.4",
