@@ -2,10 +2,11 @@ import io
 import re
 import cv2
 import numpy as np
+import torch
+import os
 
 from PIL import Image
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from api.config import DETECT_CONF, SEG_CONF
 from api.image_processing import crop, to_data_url, enhance_plate
 from api.models import detector, segmenter, parseq_model, device, transform
@@ -15,6 +16,15 @@ from api.cors import init_cors
 
 app = Flask(__name__)
 init_cors(app)
+
+# Memory leak detection - track request counts per worker
+request_count = 0
+# Maximum number of requests before forcing a model reload
+MAX_REQUESTS_BEFORE_RELOAD = 25
+
+app = Flask(__name__)
+init_cors(app)
+
 
 @app.route("/api/inference", methods=["POST"])
 def inference():
@@ -105,9 +115,36 @@ def inference():
     return jsonify(image_paths=image_paths, ocr_results=ocr_results)
 
 
+def get_memory_usage():
+    """Get current memory usage in MB"""
+    try:
+        import psutil
+        process = psutil.Process(os.getpid())
+        mem_info = process.memory_info()
+        return mem_info.rss / 1024 / 1024  # Convert to MB
+    except ImportError:
+        return 0  # psutil not available
+
+
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify(status="healthy"), 200
+    mem_usage = get_memory_usage()
+    return jsonify(status="healthy", memory_mb=round(mem_usage, 2)), 200
+
+
+@app.route('/memory', methods=['GET'])
+def memory_stats():
+    """Endpoint to monitor memory usage"""
+    mem_usage = get_memory_usage()
+    torch_mem = 0
+    if torch.cuda.is_available():
+        torch_mem = torch.cuda.memory_allocated() / 1024 / 1024  # MB
+
+    return jsonify({
+        "system_memory_mb": round(mem_usage, 2),
+        "torch_memory_mb": round(torch_mem, 2),
+        "request_count": request_count
+    })
 
 
 if __name__ == "__main__":
