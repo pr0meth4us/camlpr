@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
 *
-!requirements.txt
+!api/requirements.txt
 !api/
 !Dockerfile
 !wheels/
