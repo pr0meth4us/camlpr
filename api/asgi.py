@@ -9,7 +9,7 @@ logging.basicConfig(
 )
 
 # Import after logging configuration
-from app import create_app
+from api.app import create_app
 
 # Create Flask app
 flask_app = create_app()

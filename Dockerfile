@@ -47,4 +47,5 @@ USER appuser
 EXPOSE 5328
 
 # Start the application
-CMD ["/app/start.sh"]
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "api.app:app",
+     "--bind", "0.0.0.0:5328", "--workers", "1", "--timeout", "120"]
