@@ -1,0 +1,45 @@
+name: ml-inference-app
+
+services:
+  - name: api
+    # Choose an appropriate instance type for ML
+    instance_types:
+      - type: small  # Consider medium or larger for ML workloads
+
+    # Build from local Dockerfile
+    docker:
+      build:
+        workdir: .
+        dockerfile: Dockerfile
+
+    # Configure ports
+    ports:
+      - port: 5328
+        protocol: http
+
+    # Environment variables
+    env:
+      - name: PORT
+        value: "5328"
+      # Add any other environment variables your app needs
+
+    # Health checks
+    healthchecks:
+      http:
+        path: /health
+        port: 5328
+      initial_delay: 60s  # Give ML models time to load
+      interval: 15s
+      timeout: 10s
+      success_threshold: 1
+      failure_threshold: 5
+
+    # Scaling
+    scaling:
+      min_instances: 1
+      max_instances: 1  # Increase if needed
+
+    # Routes
+    routes:
+      - path: /
+        port: 5328
