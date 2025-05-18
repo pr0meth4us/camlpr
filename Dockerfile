@@ -1,50 +1,48 @@
-# Runtime Image
-FROM python:3.11-slim-buster
+# Build stage
+FROM python:3.11-slim AS builder
 
-# 1) Install minimal OS libraries with jemalloc
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libjemalloc2 && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+COPY requirements.txt .
+COPY wheels/strhub-*.whl ./wheels/
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt \
+ && pip install --no-cache-dir ./wheels/strhub-*.whl \
+ && rm -rf /root/.cache/pip
+
+# Runtime stage
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libsm6 libglib2.0-0 \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /app
 
-# 2) Copy dependency definitions
-COPY api/requirements.txt ./requirements.txt
-COPY api/wheels/strhub-*.whl ./wheels/
+RUN mkdir -p /app/.config/Ultralytics && chmod -R 777 /app/.config
+ENV YOLO_CONFIG_DIR=/app/.config/Ultralytics
 
-# 3) Install Python dependencies
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir \
-        --extra-index-url https://download.pytorch.org/whl/cpu \
-        -r requirements.txt && \
-    pip install --no-cache-dir uvloop httptools && \
-    pip install --no-cache-dir --no-deps ./wheels/strhub-*.whl
-
-# 4) Copy application code and models
-COPY api/ ./api/
-COPY api/app/ ./app/
 COPY api/models/ ./models/
-# (Add any other modules you need)
+COPY api/ ./api/
 
-# 5) Set environment variables for memory optimization
-ENV MALLOC_ARENA_MAX=1 \
-    OMP_NUM_THREADS=1 \
-    MKL_NUM_THREADS=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
-
-# 6) Configure non-root user
 RUN useradd -m appuser
 USER appuser
 
 EXPOSE 5328
 
-# 7) Start Uvicorn with lean flags
-CMD ["uvicorn", "api.asgi:asgi_app", \
-     "--host", "0.0.0.0", "--port", "5328", \
-     "--workers", "1", \
-     "--loop", "uvloop", "--http", "httptools", \
-     "--limit-concurrency", "5", \
-     "--timeout-keep-alive", "10"]
+ENV PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:64
+ENV OMP_NUM_THREADS=1
+ENV MKL_NUM_THREADS=1
+
+ENV GUNICORN_CMD_ARGS="--workers=1 --worker-class=sync --worker-tmp-dir=/dev/shm --max-requests=50 --max-requests-jitter=10 --timeout=120"
+
+CMD ["gunicorn", "api.app:app", "-b", "0.0.0.0:5328"]
