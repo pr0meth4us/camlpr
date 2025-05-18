@@ -19,32 +19,22 @@ def create_app() -> Flask:
     # Extensions
     init_cors(app)
 
-    # Register simple health route BEFORE loading models
-    # This ensures health checks work even if model loading is slow
-    @app.route("/health")
-    def health():
-        return {"status": "healthy"}, 200
-
-    # Blueprints (excluding health since we defined it above)
-    from .routes.inference import bp as inference_bp
-    app.register_blueprint(inference_bp, url_prefix="/api")
-
-    # Lazy-load heavy ML models exactly once AFTER health route is registered
+    # Lazy-load heavy ML models exactly once
     if detector is None:
-        try:
-            detector, segmenter, parseq_model, device, transform = load_optimized_models()
+        detector, segmenter, parseq_model, device, transform = load_optimized_models()
 
-            # Inject objects into app context for blueprints
-            app.detector = detector
-            app.segmenter = segmenter
-            app.parseq_model = parseq_model
-            app.ocr_device = device
-            app.ocr_transform = transform
-            app.request_count = 0
-            app.logger.info("ML models loaded successfully")
-        except Exception as e:
-            app.logger.error(f"Error loading ML models: {str(e)}")
-            # Continue app startup even if models fail to load
-            # Health checks will still pass, and you can debug the model loading issue
+    # Inject objects into app context for blueprints
+    app.detector = detector
+    app.segmenter = segmenter
+    app.parseq_model = parseq_model
+    app.ocr_device = device
+    app.ocr_transform = transform
+    app.request_count = 0
+
+    # Blueprints
+    from .routes.inference import bp as inference_bp
+    from .routes.health import bp as health_bp
+    app.register_blueprint(inference_bp, url_prefix="/api")
+    app.register_blueprint(health_bp)
 
     return app
