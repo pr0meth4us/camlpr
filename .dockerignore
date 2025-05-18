@@ -5,3 +5,4 @@ __pycache__/
 !api/
 !Dockerfile
 !api/wheels/
+!start.sh

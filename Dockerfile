@@ -25,11 +25,11 @@ RUN pip install --upgrade pip && \
 
 # Copy application code and models
 COPY api/ ./api/
-COPY app/ ./app/
-COPY models/ ./models/
+COPY api/app/ ./app/
+COPY api/models/ ./models/
 
 # Add startup script
-COPY start.sh /app/start.sh
+COPY ./start.sh  /app/start.sh
 RUN chmod +x /app/start.sh
 
 # Set environment variables for memory optimization
