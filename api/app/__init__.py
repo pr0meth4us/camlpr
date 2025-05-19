@@ -2,6 +2,8 @@ from flask import Flask
 from .config import Config
 from .extensions import init_cors
 from .models import load_optimized_models
+import logging
+from logging.handlers import RotatingFileHandler
 
 # Globals wired once at startup
 detector, segmenter, parseq_model, device, transform = (None,) * 5
@@ -15,6 +17,17 @@ def create_app() -> Flask:
 
     app = Flask(__name__)
     app.config.from_object(Config)
+    # ——— Logging setup ———
+    handler = RotatingFileHandler(
+        "inference.log",
+        maxBytes=10 * 1024 * 1024,
+        backupCount=5
+    )
+    handler.setFormatter(logging.Formatter(
+        "%(asctime)s %(levelname)s %(module)s: %(message)s"
+    ))
+    app.logger.addHandler(handler)
+    app.logger.setLevel(logging.INFO)
 
     # Extensions
     init_cors(app)

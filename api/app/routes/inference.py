@@ -76,6 +76,8 @@ def inference():
                    img.to_data_url(number_crop)  if number_crop   else None,
                    img.to_data_url(province_crop) if province_crop else None]
 
+    print(corrected_prov)
+
     result = [{
         "plate": plate_txt,
         "detected_province": province_txt,
@@ -91,5 +93,9 @@ def inference():
         if torch.cuda.is_available(): torch.cuda.empty_cache()
         app.detector, app.segmenter, app.parseq_model, _, _ = app.detector, app.segmenter, app.parseq_model, None, None
         app.request_count = 0
+    app.logger.info(f"Corrected province: {corrected_prov}")
+    app.logger.info(f"Inference result: {result}")
+    app.logger.info(f"[#{app.request_count}] corrected_province={corrected_prov} result={result}")
+
 
     return jsonify(image_paths=image_paths, ocr_results=result)

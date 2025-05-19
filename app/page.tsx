@@ -93,7 +93,7 @@ export default function LicensePlateDetector() {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await fetch('https://apparent-nadeen-aupp-54d2fac0.koyeb.app/api/inference', {
+      const response = await fetch('http://localhost:5328/api/inference', {
         method: 'POST',
         body: formData,
       });
