@@ -8,7 +8,7 @@ PROVINCES: List[str] = [
     "Cambodia","Banteay Meanchey","Battambang","Kampong Cham","Kampong Chhnang","Kampong Speu",
     "Kampong Thom","Kampot","Kandal","Kep","Koh Kong","Kratie","Mondulkiri","Oddar Meanchey",
     "Pailin","Phnom Penh","Preah Sihanouk","Preah Vihear","Prey Veng","Pursat","Ratanakiri",
-    "Siem Reap","Stung Treng","Svay Rieng","Takeo","Tbong Khmum"
+    "Siem Reap","Stung Treng","Svay Rieng","Takeo","Tbong Khmum", "Senate"
 ]
 
 def levenshtein(s1:str,s2:str)->int:
