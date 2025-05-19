@@ -26,6 +26,7 @@ ENV PATH="/opt/venv/bin:$PATH" \
 RUN pip install --upgrade pip \
  && pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt \
  && pip install --no-deps ./wheels/strhub-*.whl \
+      && pip install gunicorn uvicorn[standard] \
  # strip caches & pyc
  && find /opt/venv -name '__pycache__' -exec rm -rf {} + \
  && rm -rf /root/.cache/pip
