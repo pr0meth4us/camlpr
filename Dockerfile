@@ -71,4 +71,11 @@ EXPOSE 5328
 ########################################
 # Gunicorn manages workers; Uvicorn runs ASGI app
 CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "api.asgi:asgi_app", \
-     "--bind", "0.0.0.0:5328", "--workers=2", "--timeout=120"]
+     "--bind", "0.0.0.0:5328", \
+     "--workers=1", \
+     "--timeout=120", \
+     "--max-requests", "1000", \
+     "--max-requests-jitter", "50", \
+     "--preload", \
+     "--worker-tmp-dir", "/dev/shm", \
+     "--log-level", "info"]
