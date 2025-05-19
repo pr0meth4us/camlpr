@@ -1,10 +1,10 @@
 "use client";
-import { useState } from 'react';
-import { Upload, AlertCircle, Check, Image, Loader2, Camera, MapPin, ScanLine, Truck } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Key, useState} from 'react';
+import {Upload, AlertCircle, Check, Image, Loader2, Camera, MapPin, ScanLine, Truck} from 'lucide-react';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {Button} from '@/components/ui/button';
+import {Card} from '@/components/ui/card';
+import {Progress} from '@/components/ui/progress';
 
 // Types
 interface OcrResult {
@@ -20,7 +20,7 @@ interface DetectionData {
 }
 
 // Utility function for class names
-function cn(...classes) {
+function cn(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
@@ -34,37 +34,37 @@ export default function LicensePlateDetector() {
 
   // Province translations (Khmer to English)
   const provinceTranslations = {
-    'CAMBODIA': { khmer: 'កម្ពុជា', english: 'Cambodia' },
-    'BANTEAY MEANCHEY': { khmer: 'បន្ទាយមានជ័យ', english: 'Banteay Meanchey' },
-    'BATTAMBANG': { khmer: 'បាត់ដំបង', english: 'Battambang' },
-    'KAMPONG CHAM': { khmer: 'កំពង់ចាម', english: 'Kampong Cham' },
-    'KAMPONG CHHNANG': { khmer: 'កំពង់ឆ្នាំង', english: 'Kampong Chhnang' },
-    'KAMPONG SPEU': { khmer: 'កំពង់ស្ពឺ', english: 'Kampong Speu' },
-    'KAMPONG THOM': { khmer: 'កំពង់ធំ', english: 'Kampong Thom' },
-    'KAMPOT': { khmer: 'កំពត', english: 'Kampot' },
-    'KANDAL': { khmer: 'កណ្តាល', english: 'Kandal' },
-    'KOH KONG': { khmer: 'កោះកុង', english: 'Koh Kong' },
-    'KRATIE': { khmer: 'ក្រចេះ', english: 'Kratie' },
-    'MONDULKIRI': { khmer: 'មណ្ឌលគិរី', english: 'Mondulkiri' },
-    'PHNOM PENH': { khmer: 'ភ្នំពេញ', english: 'Phnom Penh' },
-    'PREAH VIHEAR': { khmer: 'ព្រះវិហារ', english: 'Preah Vihear' },
-    'PREY VENG': { khmer: 'ព្រៃវែង', english: 'Prey Veng' },
-    'PURSAT': { khmer: 'ពោធិ៍សាត់', english: 'Pursat' },
-    'RATANAKIRI': { khmer: 'រតនៈគិរី', english: 'Ratanakiri' },
-    'SIEM REAP': { khmer: 'សៀមរាប', english: 'Siem Reap' },
-    'PREAH SIHANOUK': { khmer: 'ព្រះសីហនុ', english: 'Preah Sihanouk' },
-    'STUNG TRENG': { khmer: 'ស្ទឹងត្រែង', english: 'Stung Treng' },
-    'SVAY RIENG': { khmer: 'ស្វាយរៀង', english: 'Svay Rieng' },
-    'TAKEO': { khmer: 'តាកែវ', english: 'Takeo' },
-    'TBONG KHMM': { khmer: 'ត្បូងឃ្មុំ', english: 'Tbong Khmm' },
-    'ODDAR MEANCHEY': { khmer: 'ឧត្ដរមានជ័យ', english: 'Oddar Meanchey' },
-    'KEP': { khmer: 'កែប', english: 'Kep' },
-    'PAILIN': { khmer: 'ប៉ៃលិន', english: 'Pailin' },
-    'UNREADABLE': { khmer: 'អានមិនដាច់', english: 'Unreadable' },
-    'SENATE': { khmer: 'ព្រឹទ្ធសភា', english: 'Senate' },
+    'CAMBODIA': {khmer: 'កម្ពុជា', english: 'Cambodia'},
+    'BANTEAY MEANCHEY': {khmer: 'បន្ទាយមានជ័យ', english: 'Banteay Meanchey'},
+    'BATTAMBANG': {khmer: 'បាត់ដំបង', english: 'Battambang'},
+    'KAMPONG CHAM': {khmer: 'កំពង់ចាម', english: 'Kampong Cham'},
+    'KAMPONG CHHNANG': {khmer: 'កំពង់ឆ្នាំង', english: 'Kampong Chhnang'},
+    'KAMPONG SPEU': {khmer: 'កំពង់ស្ពឺ', english: 'Kampong Speu'},
+    'KAMPONG THOM': {khmer: 'កំពង់ធំ', english: 'Kampong Thom'},
+    'KAMPOT': {khmer: 'កំពត', english: 'Kampot'},
+    'KANDAL': {khmer: 'កណ្តាល', english: 'Kandal'},
+    'KOH KONG': {khmer: 'កោះកុង', english: 'Koh Kong'},
+    'KRATIE': {khmer: 'ក្រចេះ', english: 'Kratie'},
+    'MONDULKIRI': {khmer: 'មណ្ឌលគិរី', english: 'Mondulkiri'},
+    'PHNOM PENH': {khmer: 'ភ្នំពេញ', english: 'Phnom Penh'},
+    'PREAH VIHEAR': {khmer: 'ព្រះវិហារ', english: 'Preah Vihear'},
+    'PREY VENG': {khmer: 'ព្រៃវែង', english: 'Prey Veng'},
+    'PURSAT': {khmer: 'ពោធិ៍សាត់', english: 'Pursat'},
+    'RATANAKIRI': {khmer: 'រតនៈគិរី', english: 'Ratanakiri'},
+    'SIEM REAP': {khmer: 'សៀមរាប', english: 'Siem Reap'},
+    'PREAH SIHANOUK': {khmer: 'ព្រះសីហនុ', english: 'Preah Sihanouk'},
+    'STUNG TRENG': {khmer: 'ស្ទឹងត្រែង', english: 'Stung Treng'},
+    'SVAY RIENG': {khmer: 'ស្វាយរៀង', english: 'Svay Rieng'},
+    'TAKEO': {khmer: 'តាកែវ', english: 'Takeo'},
+    'TBONG KHMM': {khmer: 'ត្បូងឃ្មុំ', english: 'Tbong Khmm'},
+    'ODDAR MEANCHEY': {khmer: 'ឧត្ដរមានជ័យ', english: 'Oddar Meanchey'},
+    'KEP': {khmer: 'កែប', english: 'Kep'},
+    'PAILIN': {khmer: 'ប៉ៃលិន', english: 'Pailin'},
+    'UNREADABLE': {khmer: 'អានមិនដាច់', english: 'Unreadable'},
+    'SENATE': {khmer: 'ព្រឹទ្ធសភា', english: 'Senate'},
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: { target: { files: any[]; }; }) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
@@ -73,7 +73,7 @@ export default function LicensePlateDetector() {
     }
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: { preventDefault: () => void; dataTransfer: { files: any[]; }; }) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files?.[0];
     if (droppedFile) {
@@ -120,98 +120,98 @@ export default function LicensePlateDetector() {
 
   // Image Upload Component
   const ImageUpload = () => (
-    <div className="w-full max-w-3xl mx-auto">
-      <div
-        className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
-          "hover:bg-gray-50 dark:hover:bg-gray-900",
-          "border-gray-300 dark:border-gray-700"
-        )}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-        onClick={() => document.getElementById('fileInput')?.click()}
-      >
-        <input
-          id="fileInput"
-          type="file"
-          className="hidden"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-
-        <div className="flex flex-col items-center space-y-4">
-          {preview ? (
-            <div className="relative w-full max-w-lg mx-auto">
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-full h-64 object-contain rounded-md"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                className="absolute top-2 right-2 bg-white dark:bg-gray-800"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  resetProcess();
-                }}
-              >
-                Change
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-4">
-                <Upload className="h-8 w-8 text-blue-600 dark:text-blue-300" />
-              </div>
-              <div>
-                <p className="text-lg font-medium">Upload license plate image</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Drag and drop or click to select
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-4 flex justify-center">
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            uploadImage();
-          }}
-          disabled={!file || isLoading}
-          className="w-full md:w-auto"
+      <div className="w-full max-w-3xl mx-auto">
+        <div
+            className={cn(
+                "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
+                "hover:bg-gray-50 dark:hover:bg-gray-900",
+                "border-gray-300 dark:border-gray-700"
+            )}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleDrop}
+            onClick={() => document.getElementById('fileInput')?.click()}
         >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing...
-            </>
-          ) : (
-            <>
-              <Camera className="mr-2 h-4 w-4" />
-              Detect License Plate
-            </>
-          )}
-        </Button>
-      </div>
+          <input
+              id="fileInput"
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+          />
 
-      {error && (
-        <Alert variant="destructive" className="mt-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-    </div>
+          <div className="flex flex-col items-center space-y-4">
+            {preview ? (
+                <div className="relative w-full max-w-lg mx-auto">
+                  <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-64 object-contain rounded-md"
+                  />
+                  <Button
+                      variant="outline"
+                      size="sm"
+                      className="absolute top-2 right-2 bg-white dark:bg-gray-800"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        resetProcess();
+                      }}
+                  >
+                    Change
+                  </Button>
+                </div>
+            ) : (
+                <>
+                  <div className="rounded-full bg-blue-100 dark:bg-blue-900 p-4">
+                    <Upload className="h-8 w-8 text-blue-600 dark:text-blue-300"/>
+                  </div>
+                  <div>
+                    <p className="text-lg font-medium">Upload license plate image</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Drag and drop or click to select
+                    </p>
+                  </div>
+                </>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex justify-center">
+          <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                 uploadImage();
+              }}
+              disabled={!file || isLoading}
+              className="w-full md:w-auto"
+          >
+            {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                  Processing...
+                </>
+            ) : (
+                <>
+                  <Camera className="mr-2 h-4 w-4"/>
+                  Detect License Plate
+                </>
+            )}
+          </Button>
+        </div>
+
+        {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertCircle className="h-4 w-4"/>
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+        )}
+      </div>
   );
 
   // Detection Results Component
-  const DetectionResults = ({ imagePaths }) => (
-    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-      {imagePaths.map((path, index) => {
+  const DetectionResults = ({imagePaths}) => (
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {imagePaths.map((path: string, index: number ) => {
         const titles = [
           { name: "Original Detection", icon: <Camera className="h-5 w-5" /> },
           { name: "Cropped Plate", icon: <ScanLine className="h-5 w-5" /> },
@@ -240,7 +240,7 @@ export default function LicensePlateDetector() {
 
   // OCR Details Component
   const OcrDetails = ({ result }) => {
-    const getConfidenceColor = (confidence) => {
+    const getConfidenceColor = (confidence: number) => {
       if (confidence >= 90) return "text-green-600 dark:text-green-400";
       if (confidence >= 70) return "text-yellow-600 dark:text-yellow-400";
       return "text-red-600 dark:text-red-400";
