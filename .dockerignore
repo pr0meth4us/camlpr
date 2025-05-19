@@ -4,4 +4,4 @@ __pycache__/
 !api/requirements.txt
 !api/
 !Dockerfile
-!api/wheels/!api/wheels/
+!api/wheels/strhub-1.2.0-py3-none-any.whl

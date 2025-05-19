@@ -12,7 +12,7 @@ WORKDIR /build
 
 # 2. Copy dependency manifests first for better layer caching
 COPY api/requirements.txt .
-COPY api/wheels/strhub-*.whl ./wheels/
+COPY api/wheels/strhub-1.2.0-py3-none-any.whl ./wheels/
 
 # 3. Isolated venv keeps site-packages compact
 RUN python -m venv /opt/venv
