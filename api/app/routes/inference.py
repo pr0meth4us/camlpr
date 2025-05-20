@@ -55,10 +55,14 @@ def inference():
 
     # 4. OCR
     plate_txt, province_txt = "", ""
+    province_conf = None
+    number_conf = None
+
     if number_crop:
         raw, c = ocr_parseq(number_crop, app.parseq_model, app.ocr_transform, app.ocr_device)
         plate_txt = re.sub(r"[^A-Za-z0-9\-.]", "", raw)
         number_conf = c
+
     if province_crop:
         raw, c = ocr_parseq(province_crop, app.parseq_model, app.ocr_transform, app.ocr_device)
         province_txt = re.sub(r"[^A-Za-z0-9\-.]", "", raw)
@@ -90,7 +94,7 @@ def inference():
         "plate": plate_txt,
         "detected_province": province_txt,
         "corrected_province": corrected_prov,
-        "province_confidence": province_conf,
+        "province_confidence": province_conf ,
         "number_confidence": number_conf,
         "format_valid": valid_fmt
     }]

@@ -8,7 +8,7 @@ PROVINCES: List[str] = [
     "Cambodia","Banteay Meanchey","Battambang","Kampong Cham","Kampong Chhnang","Kampong Speu",
     "Kampong Thom","Kampot","Kandal","Kep","Koh Kong","Kratie","Mondulkiri","Oddar Meanchey",
     "Pailin","Phnom Penh","Preah Sihanouk","Preah Vihear","Prey Veng","Pursat","Ratanakiri",
-    "Siem Reap","Stung Treng","Svay Rieng","Takeo","Tbong Khmum", "Senate"
+    "Siem Reap","Stung Treng","Svay Rieng","Takeo","Tbong Khmum", "Senate", "Police", "RCAF"
 ]
 
 def levenshtein(s1:str,s2:str)->int:
@@ -27,6 +27,7 @@ def correct_province(txt:str)->str:
     if not txt: return "unreadable"
     txt = txt.strip().title()
     prov,dist = min(((p,levenshtein(txt,p)) for p in PROVINCES), key=lambda x:x[1])
+    print(txt)
     return prov if dist<=2 else "unreadable"
 
 def correct_plate(txt:str, fmt:str)->str:

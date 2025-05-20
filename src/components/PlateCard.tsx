@@ -42,7 +42,8 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
         "ODDAR MEANCHEY": "ឧត្ដរមានជ័យ",
         "KEP": "កែប",
         "PAILIN": "ប៉ៃលិន",
-        "UNREADABLE": "អានមិនដាច់"
+        "UNREADABLE": "អានមិនដាច់",
+        "POLICE": ""
     };
     const normalized = province.toUpperCase();
     const khmerText = provinceToKhmer[normalized] || provinceToKhmer["UNREADABLE"];
@@ -114,9 +115,7 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
                     fontWeight: 700,
                     color: '#1e3a8a'
                 }}>
-                    <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>{prefix}</span>
-                    <span style={{ margin: '0 8px', color: '#1e3a8a' }}>-</span>
-                    <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>{number}</span>
+                    <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>{plate}</span>
                 </div>
 
                 {/* Separator */}

@@ -1,11 +1,6 @@
-import { OcrResult } from "@/types";
+import { PlateDetectionResponse } from "@/types";
 
-interface ApiResponse {
-  image_paths: string[];
-  ocr_results: OcrResult[];
-}
-
-export async function uploadImage(image: File): Promise<ApiResponse> {
+export const uploadImage = async (image: File): Promise<PlateDetectionResponse> => {
   const form = new FormData();
   form.append("image", image);
 
@@ -19,5 +14,5 @@ export async function uploadImage(image: File): Promise<ApiResponse> {
     throw new Error(data.error || "No license plate detected");
   }
 
-  return data as ApiResponse;
+  return data as PlateDetectionResponse;
 }
