@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Upload,
     AlertCircle,
@@ -66,7 +66,6 @@ export default function ImageUpload({
                                 : "border-slate-700 hover:border-violet-500/50 bg-black/20 hover:bg-violet-950/10"
                         }`}
                     >
-                        {/* Animated glow effect */}
                         <div className="absolute inset-0 w-full h-full bg-grid-pattern opacity-5"></div>
                         <div className="absolute -inset-1 bg-gradient-to-r from-violet-600/10 via-indigo-600/5 to-purple-600/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 

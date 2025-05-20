@@ -1,52 +1,15 @@
+
 import React, { useState } from "react";
-import { MapPin } from "lucide-react";
 
 interface PlateCardProps {
     plate: string;
     province: string;
+    khmerProvince: string;
     qrUrl?: string;
 }
 
-export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
+export default function PlateCard({ plate, province, khmerProvince, qrUrl }: PlateCardProps) {
     const [isHovered, setIsHovered] = useState(false);
-
-    // Split plate
-    const parts = plate.split(/[-\s]/).filter(Boolean);
-    const [prefix, number] = parts.length === 2 ? parts : ["1FW", "9554"];
-
-    // Province mapping
-    const provinceToKhmer: Record<string, string> = {
-        "CAMBODIA": "កម្ពុជា",
-        "BANTEAY MEANCHEY": "បន្ទាយមានជ័យ",
-        "BATTAMBANG": "បាត់ដំបង",
-        "KAMPONG CHAM": "កំពង់ចាម",
-        "KAMPONG CHHNANG": "កំពង់ឆ្នាំង",
-        "KAMPONG SPEU": "កំពង់ស្ពឺ",
-        "KAMPONG THOM": "កំពង់ធំ",
-        "KAMPOT": "កំពត",
-        "KANDAL": "កណ្តាល",
-        "KOH KONG": "កោះកុង",
-        "KRATIE": "ក្រចេះ",
-        "MONDULKIRI": "មណ្ឌលគិរី",
-        "PHNOM PENH": "ភ្នំពេញ",
-        "PREAH VIHEAR": "ព្រះវិហារ",
-        "PREY VENG": "ព្រៃវែង",
-        "PURSAT": "ពោធិ៍សាត់",
-        "RATANAKIRI": "រតនៈគិរី",
-        "SIEM REAP": "សៀមរាប",
-        "PREAH SIHANOUK": "ព្រះសីហនុ",
-        "STUNG TRENG": "ស្ទឹងត្រែង",
-        "SVAY RIENG": "ស្វាយរៀង",
-        "TAKEO": "តាកែវ",
-        "TBONG KHMM": "ត្បូងឃ្មុំ",
-        "ODDAR MEANCHEY": "ឧត្ដរមានជ័យ",
-        "KEP": "កែប",
-        "PAILIN": "ប៉ៃលិន",
-        "UNREADABLE": "អានមិនដាច់",
-        "POLICE": ""
-    };
-    const normalized = province.toUpperCase();
-    const khmerText = provinceToKhmer[normalized] || provinceToKhmer["UNREADABLE"];
 
     return (
         <div
@@ -101,10 +64,10 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
                     fontWeight: 700,
                     color: '#1e3a8a'
                 }}>
-                    {khmerText}
+                    {khmerProvince}
                 </div>
 
-                {/* Plate number */}
+                {/* Plate number - already in uppercase from backend */}
                 <div style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -125,7 +88,7 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
                     margin: '0 16px'
                 }} />
 
-                {/* English province */}
+                {/* English province - already in uppercase from backend */}
                 <div style={{
                     padding: '6px 0',
                     textAlign: 'center',
@@ -135,7 +98,7 @@ export default function PlateCard({ plate, province, qrUrl }: PlateCardProps) {
                     color: '#dc2626',
                     textTransform: 'uppercase'
                 }}>
-                    {normalized}
+                    {province}
                 </div>
 
                 {/* Optional QR */}

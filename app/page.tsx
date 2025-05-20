@@ -96,6 +96,7 @@ export default function Home({}: HomeProps) {
           detected_province: res.detected_province || "Unknown",
           number_confidence: res.number_confidence ?? 0,
           province_confidence: res.province_confidence ?? 0,
+          khmer_province: res.khmer_province || "Unknown",
           format_valid: res.format_valid ?? false,
         })) || null
       );
@@ -407,7 +408,8 @@ export default function Home({}: HomeProps) {
                       <div className="bg-gradient-to-br from-gray-800/70 to-gray-900/90 rounded-xl p-6 border border-gray-700/50 shadow-lg">
                         <PlateCard
                           plate={ocrResults[0].plate || "N/A"}
-                          province={ocrResults[0].corrected_province || "Unknown"}
+                            province={ocrResults[0].corrected_province || "Unreadable"}
+                          khmerProvince={ocrResults[0].khmer_province || "អានមិនដាច់"}
                         />
 
                         <div className="mt-6">
