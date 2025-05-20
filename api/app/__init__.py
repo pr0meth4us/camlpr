@@ -3,31 +3,27 @@ from .config import Config
 from .extensions import init_cors
 from .models import load_optimized_models
 import logging
-from logging.handlers import RotatingFileHandler
+import sys
 
-# Globals wired once at startup
 detector, segmenter, parseq_model, device, transform = (None,) * 5
 
 
 def create_app() -> Flask:
-    """
-    Application-factory.  Creates and configures a Flask app instance.
-    """
     global detector, segmenter, parseq_model, device, transform
 
     app = Flask(__name__)
     app.config.from_object(Config)
-    # ——— Logging setup ———
-    handler = RotatingFileHandler(
-        "inference.log",
-        maxBytes=10 * 1024 * 1024,
-        backupCount=5
-    )
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s %(levelname)s %(module)s: %(message)s"
+
+    # ——— Console Logging setup ———
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(logging.Formatter(
+        "[%(asctime)s] %(levelname)s - %(name)s: %(message)s"
     ))
-    app.logger.addHandler(handler)
+    app.logger.addHandler(console_handler)
     app.logger.setLevel(logging.INFO)
+
+    # Remove default Flask handlers to avoid duplicate logs
+    app.logger.handlers = [console_handler]
 
     # Extensions
     init_cors(app)
@@ -50,4 +46,5 @@ def create_app() -> Flask:
     app.register_blueprint(inference_bp, url_prefix="/api")
     app.register_blueprint(health_bp)
 
+    app.logger.info("Application initialized with console logging")
     return app
