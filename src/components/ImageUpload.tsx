@@ -4,10 +4,10 @@ import {
     AlertCircle,
     Camera,
     RefreshCw,
-    X,
     RotateCcw,
     CheckCircle2,
-    Image as ImageIcon
+    Image as ImageIcon,
+    X
 } from "lucide-react";
 
 interface ImageUploadProps {
@@ -44,160 +44,120 @@ export default function ImageUpload({
     };
 
     return (
-        <div className="p-6 bg-gradient-to-br from-primary/20 to-gray-950 rounded-xl border border-border/50 shadow-xl">
-            {/* Main content wrapper */}
-            <div className="grid md:grid-cols-2 gap-6">
-                {/* Upload Section */}
-                <div className="flex flex-col space-y-4">
-                    <div className="flex items-center mb-1">
-                        <div className="w-1 h-6 bg-gradient-to-b from-primary to-secondary rounded-full mr-3"></div>
-                        <h3 className="text-lg font-semibold text-white">Upload Image</h3>
-                    </div>
+        <div className="p-6 bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl border border-gray-800/50 shadow-xl">
+            <div className="flex items-center mb-5">
+                <div className="w-1 h-6 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full mr-3"></div>
+                <h3 className="text-lg font-semibold text-white">License Plate Detection</h3>
+            </div>
 
-                    {/* Upload Area */}
-                    <label
-                        htmlFor="imageUpload"
-                        className={`relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 overflow-hidden group ${
-                            previewUrl
-                                ? "border-primary/50 bg-primary/10"
-                                : "border-gray-700 hover:border-primary/50 bg-black/20 hover:bg-primary/10"
-                        }`}
-                    >
-                        {/* Animated glow effect */}
-                        <div className="absolute inset-0 w-full h-full bg-grid-pattern opacity-5"></div>
-                        <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-secondary/5 to-accent/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                        {/* Content */}
-                        <div className="flex flex-col items-center justify-center p-6 text-center z-10">
-                            {previewUrl ? (
-                                <div className="flex flex-col items-center">
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-xl flex items-center justify-center mb-4 ring-2 ring-primary/20 shadow-lg shadow-primary/10">
-                                        <CheckCircle2 className="w-8 h-8 text-primary" />
-                                    </div>
-                                    <p className="text-primary font-semibold">Image Selected</p>
-                                    <p className="text-xs text-primary/80 mt-2">Click to replace</p>
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-xl flex items-center justify-center mb-4 group-hover:bg-gradient-to-br group-hover:from-primary/20 group-hover:to-secondary/20 transition-colors duration-300 transform">
-                                        <Upload className="w-8 h-8 text-gray-400 group-hover:text-primary transition-colors duration-300" />
-                                    </div>
-                                    <p className="mb-2 text-sm font-semibold text-gray-200">
-                                        <span className="text-primary">Upload Image</span> or drag and drop
-                                    </p>
-                                    <p className="text-xs text-gray-400 opacity-70">PNG, JPG, or JPEG</p>
-                                </>
-                            )}
-                        </div>
-                        <input
-                            id="imageUpload"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleChange}
-                            className="hidden"
-                        />
-                    </label>
-
-                    {/* Action Buttons */}
-                    <div className="flex space-x-3">
-                        {/* Detect Button */}
-                        <button
-                            onClick={onSubmit}
-                            disabled={loading || !previewUrl}
-                            className={`relative flex-1 px-6 py-3 rounded-lg font-medium text-sm flex items-center justify-center transition-all duration-300 ${
-                                loading || !previewUrl
-                                    ? "bg-gray-800/30 text-gray-500 cursor-not-allowed"
-                                    : "bg-gradient-to-r from-primary via-secondary to-primary text-white hover:shadow-lg hover:shadow-primary/30 transform hover:-translate-y-1"
-                            }`}
-                        >
-                            {loading ? (
-                                <>
-                                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                                    Processing...
-                                </>
-                            ) : (
-                                <div className="flex items-center">
-                                    <Camera className="w-4 h-4 mr-2" />
-                                    <span>Detect License Plate</span>
-                                </div>
-                            )}
-                        </button>
-
-                        {/* Control buttons for when image is selected */}
-                        {previewUrl && (
-                            <div className="flex space-x-2">
-                                {/* Cancel button */}
-                                <button
-                                    onClick={handleCancel}
-                                    disabled={loading}
-                                    className="p-3 rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive hover:text-destructive-foreground transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
-
-                                {/* Retry button */}
-                                <button
-                                    onClick={handleRetry}
-                                    disabled={loading}
-                                    className="p-3 rounded-lg bg-amber-950/30 hover:bg-amber-900/40 text-amber-400 hover:text-amber-300 transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <RotateCcw className="w-5 h-5" />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Error Message */}
-                    {error && (
-                        <div className="p-4 bg-destructive/10 backdrop-blur-sm border-l-4 border-destructive rounded-lg flex items-start shadow-lg animate-fadeIn">
-                            <AlertCircle className="w-5 h-5 text-destructive mr-3 mt-0.5 flex-shrink-0" />
-                            <div className="text-destructive-foreground text-sm">{error}</div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Preview Section */}
-                <div className="flex flex-col">
-                    <div className="flex items-center mb-4">
-                        <div className="w-1 h-6 bg-gradient-to-b from-secondary to-accent rounded-full mr-3"></div>
-                        <h3 className="text-lg font-semibold text-white">Preview</h3>
-                    </div>
-
-                    {previewUrl ? (
-                        <div className="bg-gradient-to-br from-gray-900/90 to-gray-950/90 backdrop-blur-md rounded-xl overflow-hidden border border-border/50 shadow-2xl transition-all duration-300 h-full">
+            {/* Upload/Preview Combined Section */}
+            <div className="mb-6">
+                {previewUrl ? (
+                    // Preview Mode
+                    <div className="relative">
+                        {/* Preview Area */}
+                        <div className="bg-gradient-to-br from-gray-900/90 to-gray-950/90 backdrop-blur-md rounded-xl overflow-hidden border border-gray-800/50 shadow-lg transition-all duration-300">
                             {/* Header bar */}
-                            <div className="bg-gradient-to-r from-background to-gray-800 py-2.5 px-4 border-b border-border flex items-center">
-                                <div className="flex space-x-2 mr-3">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-destructive"></div>
-                                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
-                                    <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                            <div className="bg-gradient-to-r from-gray-900 to-gray-800 py-2.5 px-4 border-b border-gray-800 flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <div className="flex space-x-2">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+                                        <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                                    </div>
+                                    <p className="text-xs font-medium text-gray-400">Image Preview</p>
                                 </div>
-                                <p className="text-xs font-medium text-muted-foreground ml-1">image-preview.jpg</p>
+                                <div className="flex space-x-2">
+                                    {/* Replace button */}
+                                    <label htmlFor="imageUpload" className="cursor-pointer p-1.5 rounded-md bg-gray-800/70 text-gray-400 hover:text-cyan-400 hover:bg-gray-700/70 transition-all duration-200">
+                                        <RotateCcw className="w-4 h-4" />
+                                    </label>
+                                    {/* Remove button */}
+                                    <button
+                                        onClick={handleCancel}
+                                        className="p-1.5 rounded-md bg-gray-800/70 text-gray-400 hover:text-red-400 hover:bg-gray-700/70 transition-all duration-200">
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Image container */}
-                            <div className="p-6 flex justify-center items-center bg-gradient-to-b from-transparent to-gray-900/30 h-full">
+                            <div className="p-6 flex justify-center items-center bg-gradient-to-b from-transparent to-gray-900/30">
                                 <div className="relative group rounded-lg overflow-hidden">
                                     <img
                                         src={previewUrl}
                                         alt="Preview"
-                                        className="rounded-lg object-contain max-h-60 shadow-xl group-hover:scale-105 transition-transform duration-500"
+                                        className="rounded-lg object-contain max-h-64 shadow-lg group-hover:scale-105 transition-transform duration-500"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                                 </div>
                             </div>
                         </div>
-                    ) : (
-                        <div className="bg-gradient-to-br from-gray-900/60 to-black/40 backdrop-blur-sm rounded-xl border border-border/50 h-full flex flex-col items-center justify-center p-8 shadow-inner">
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-lg flex items-center justify-center mb-5 opacity-60">
-                                <ImageIcon className="w-10 h-10 text-gray-500" />
+                    </div>
+                ) : (
+                    // Upload Mode
+                    <label
+                        htmlFor="imageUpload"
+                        className="relative flex flex-col items-center justify-center h-64 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 overflow-hidden group border-gray-700 hover:border-cyan-500/50 bg-black/20 hover:bg-cyan-950/10"
+                    >
+                        {/* Animated glow effect */}
+                        <div className="absolute inset-0 w-full h-full bg-grid-pattern opacity-5"></div>
+                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-600/10 via-blue-600/5 to-indigo-600/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                        {/* Content */}
+                        <div className="flex flex-col items-center justify-center p-6 text-center z-10">
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-xl flex items-center justify-center mb-4 group-hover:bg-gradient-to-br group-hover:from-cyan-900/20 group-hover:to-blue-900/20 transition-colors duration-300 transform">
+                                <Upload className="w-8 h-8 text-gray-400 group-hover:text-cyan-400 transition-colors duration-300" />
                             </div>
-                            <p className="mb-2 text-gray-400 font-medium">No Image Selected</p>
-                            <p className="text-xs text-gray-500 text-center max-w-xs">Upload an image to see the preview here</p>
+                            <p className="mb-2 text-sm font-semibold text-gray-200">
+                                <span className="text-cyan-400">Upload Image</span> or drag and drop
+                            </p>
+                            <p className="text-xs text-gray-400 opacity-70">PNG, JPG, or JPEG</p>
+                        </div>
+                    </label>
+                )}
+
+                <input
+                    id="imageUpload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className="hidden"
+                />
+            </div>
+
+            {/* Action Button - Always Visible */}
+            <div className="flex space-x-3">
+                <button
+                    onClick={onSubmit}
+                    disabled={loading || !previewUrl}
+                    className={`relative w-full px-6 py-3 rounded-lg font-medium text-sm flex items-center justify-center transition-all duration-300 ${
+                        loading || !previewUrl
+                            ? "bg-gray-800/30 text-gray-500 cursor-not-allowed"
+                            : "bg-gradient-to-r from-cyan-600 via-blue-600 to-cyan-600 text-white hover:shadow-lg hover:shadow-cyan-500/30 transform hover:-translate-y-1"
+                    }`}
+                >
+                    {loading ? (
+                        <>
+                            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            Processing...
+                        </>
+                    ) : (
+                        <div className="flex items-center">
+                            <Camera className="w-4 h-4 mr-2" />
+                            <span>Detect License Plate</span>
                         </div>
                     )}
-                </div>
+                </button>
             </div>
+
+            {/* Error Message */}
+            {error && (
+                <div className="p-4 mt-4 bg-red-900/20 backdrop-blur-sm border-l-4 border-red-500 rounded-lg flex items-start shadow-lg animate-fadeIn">
+                    <AlertCircle className="w-5 h-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" />
+                    <div className="text-red-200 text-sm">{error}</div>
+                </div>
+            )}
         </div>
     );
 }
