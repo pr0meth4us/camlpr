@@ -196,7 +196,7 @@ export default function Home({}: HomeProps) {
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Camera className="h-8 w-8 text-cyan-400 animate-pulse" />
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">PlateDetect</h1>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">CamLPR</h1>
           </div>
         </div>
       </header>
