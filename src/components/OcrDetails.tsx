@@ -1,10 +1,13 @@
 import React from "react";
-import { MapPin, BarChart } from "lucide-react";
+import { MapPin, BarChart, Hash, ShieldCheck, AlertTriangle } from "lucide-react";
 
 interface OcrResult {
+    plate: string;
     detected_province: string;
     corrected_province: string;
-    confidence: number;
+    province_confidence: number;
+    number_confidence: number;
+    format_valid: boolean;
 }
 
 interface OcrDetailsProps {
@@ -13,38 +16,107 @@ interface OcrDetailsProps {
 
 export default function OcrDetails({ ocrResults }: OcrDetailsProps) {
     if (!ocrResults.length) return null;
-    const { detected_province, corrected_province, confidence } = ocrResults[0];
+
+    const {
+        detected_province,
+        corrected_province,
+        plate,
+        province_confidence,
+        number_confidence,
+        format_valid
+    } = ocrResults[0];
+
+    // Calculate overall confidence as average of the two scores
+    const confidence = (province_confidence + number_confidence) / 2;
 
     const getConfidenceMeta = (conf: number) => {
-        if (conf > 85) return { bg: "bg-emerald-500", text: "text-emerald-50", label: "High" };
-        if (conf > 70) return { bg: "bg-amber-500", text: "text-amber-50", label: "Medium" };
-        return { bg: "bg-rose-500", text: "text-rose-50", label: "Low" };
+        if (conf > 85) return { bg: "bg-gradient-to-r from-primary to-secondary", text: "text-white", label: "High" };
+        if (conf > 70) return { bg: "bg-gradient-to-r from-yellow-500 to-amber-500", text: "text-white", label: "Medium" };
+        return { bg: "bg-gradient-to-r from-destructive to-rose-500", text: "text-white", label: "Low" };
     };
 
-    const { bg, text, label } = getConfidenceMeta(confidence);
+    const provinceConf = getConfidenceMeta(province_confidence);
+    const numberConf = getConfidenceMeta(number_confidence);
+    const overallConf = getConfidenceMeta(confidence);
 
     return (
-        <div className="w-full max-w-lg mx-auto bg-gray-800 rounded-lg shadow-lg p-6">
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Province Metric */}
-                <div className="flex items-center bg-gray-700 rounded-md p-4">
-                    <MapPin className="w-6 h-6 text-green-400 mr-4" />
-                    <div>
-                        <p className="text-xs text-gray-400">Province</p>
-                        <p className="text-lg text-white font-semibold">{corrected_province || detected_province || "—"}</p>
+        <div className="w-full">
+            <div className="grid grid-cols-1 gap-4">
+                {/* Plate Number Metric */}
+                <div className="bg-card/50 rounded-lg p-4 hover:bg-card/80 transition-all duration-200 border border-border/50">
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center">
+                            <Hash className="w-6 h-6 text-primary mr-3" />
+                            <p className="text-sm text-card-foreground font-medium">License Plate</p>
+                        </div>
+                        {format_valid ? (
+                            <span className="flex items-center text-xs text-emerald-400">
+                <ShieldCheck className="w-4 h-4 mr-1" /> Valid Format
+              </span>
+                        ) : (
+                            <span className="flex items-center text-xs text-amber-400">
+                <AlertTriangle className="w-4 h-4 mr-1" /> Format Warning
+              </span>
+                        )}
+                    </div>
+                    <p className="text-2xl text-white font-bold tracking-tight">{plate || "—"}</p>
+                    <div className="mt-2 flex items-center justify-between">
+                        <div className="flex items-center">
+                            <div className="w-2 h-2 rounded-full bg-primary mr-2"></div>
+                            <span className="text-xs text-muted-foreground">Number Confidence</span>
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${numberConf.bg} ${numberConf.text}`}>
+              {number_confidence.toFixed(1)}%
+            </span>
+                    </div>
+                    <div className="w-full h-1.5 bg-muted/30 rounded-full mt-1.5 overflow-hidden">
+                        <div className={`${numberConf.bg} h-full rounded-full shadow-inner transition-all duration-500`}
+                             style={{ width: `${number_confidence}%` }} />
                     </div>
                 </div>
 
-                {/* Confidence Metric */}
-                <div className="bg-gray-700 rounded-md p-4">
-                    <p className="text-xs text-gray-400 mb-1">Recognition Confidence</p>
-                    <div className="flex items-center justify-between">
-                        <span className="text-2xl text-white font-bold">{confidence.toFixed(1)}%</span>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${bg} ${text}`}>{label}</span>
+                {/* Province Metric */}
+                <div className="bg-card/50 rounded-lg p-4 hover:bg-card/80 transition-all duration-200 border border-border/50">
+                    <div className="flex items-center mb-2">
+                        <MapPin className="w-6 h-6 text-secondary mr-3" />
+                        <p className="text-sm text-card-foreground font-medium">Province</p>
                     </div>
-                    <div className="w-full h-2 bg-gray-600 rounded-full mt-3 overflow-hidden">
-                        <div className={`${bg} h-full`} style={{ width: `${confidence}%` }} />
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-xl text-white font-bold tracking-tight">
+                                {corrected_province || "—"}
+                            </p>
+                            {detected_province !== corrected_province && detected_province && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    Detected as: <span className="text-amber-400">{detected_province}</span>
+                                </p>
+                            )}
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${provinceConf.bg} ${provinceConf.text}`}>
+              {province_confidence.toFixed(1)}%
+            </span>
+                    </div>
+                    <div className="w-full h-1.5 bg-muted/30 rounded-full mt-2 overflow-hidden">
+                        <div className={`${provinceConf.bg} h-full rounded-full shadow-inner transition-all duration-500`}
+                             style={{ width: `${province_confidence}%` }} />
+                    </div>
+                </div>
+
+                {/* Overall Confidence Metric */}
+                <div className="bg-card/50 rounded-lg p-4 hover:bg-card/80 transition-all duration-200 border border-border/50">
+                    <div className="flex items-center mb-2">
+                        <BarChart className="w-6 h-6 text-accent mr-3" />
+                        <p className="text-sm text-card-foreground font-medium">Overall Recognition Confidence</p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="text-2xl text-white font-extrabold">{confidence.toFixed(1)}%</span>
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${overallConf.bg} ${overallConf.text}`}>
+              {overallConf.label}
+            </span>
+                    </div>
+                    <div className="w-full h-2 bg-muted/30 rounded-full mt-3 overflow-hidden">
+                        <div className={`${overallConf.bg} h-full rounded-full shadow-inner transition-all duration-500`}
+                             style={{ width: `${confidence}%` }} />
                     </div>
                 </div>
             </div>
