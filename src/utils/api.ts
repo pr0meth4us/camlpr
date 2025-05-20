@@ -15,4 +15,4 @@ export const uploadImage = async (image: File): Promise<PlateDetectionResponse> 
   }
 
   return data as PlateDetectionResponse;
-}
+};
