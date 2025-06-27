@@ -5,5 +5,15 @@ pytorch-lightning==2.5.1.post0
 roboflow==1.1.64
 timm==1.0.15
 ultralytics==8.3.134
-uvicorn
-asgiref
+gunicorn
+uwsgi  # Add uwsgi explicitly for PythonAnywhere
+pandas
+numpy
+emoji
+scikit-learn
+transformers
+psycopg2-binary
+beautifulsoup4
+selectolax
+python-Levenshtein
+python-dotenv
