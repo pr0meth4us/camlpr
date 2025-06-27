@@ -12,7 +12,7 @@ const nextConfig = {
       : [
           {
             source: '/api/:path*',
-            destination: 'https://apparent-nadeen-aupp-54d2fac0.koyeb.app/api/:path*',
+            destination: 'http://13.55.48.245:5328/api/:path*',
           },
         ];
   },
